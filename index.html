@@ -147,15 +147,16 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
 }
 .card-type.proposal{background:rgba(124,92,252,0.2);color:var(--accent)}
 .card-type.seed{background:rgba(251,191,36,0.2);color:var(--yellow)}
-.card-rating{
-  flex-shrink:0;width:30px;height:30px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:0.85rem;font-weight:800;
+.card-scores{
+  flex-shrink:0;display:flex;gap:4px;
 }
-.card-rating.S{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000}
-.card-rating.A{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff}
-.card-rating.B{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
-.card-rating.C{background:linear-gradient(135deg,#6b7280,#4b5563);color:#fff}
+.card-score{
+  width:28px;height:28px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.75rem;font-weight:800;
+}
+.card-score.commercial{background:rgba(253,203,110,0.2);color:var(--yellow)}
+.card-score.streaming{background:rgba(0,240,255,0.2);color:var(--cyan)}
 .card-logline{font-size:0.82rem;color:var(--text2);line-height:1.5;margin-bottom:10px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
 }
@@ -458,19 +459,19 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
 <link rel="apple-touch-icon" sizes="192x192" href="./icon-192.png">
-<meta name="theme-color" content="#0d0d14">
+<meta name="theme-color" content="#0a0a16">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="企画レビュー">
-<meta name="description" content="アニメ企画をレビュー・評価するアプリ">
+<meta name="apple-mobile-web-app-title" content="ゲームレビュー">
+<meta name="description" content="ゲームアイデアをレビュー・評価するアプリ">
 </head>
 <body>
 <div id="app">
   <!-- Header -->
   <header class="header" id="header">
     <button class="header-back hidden" id="backBtn" aria-label="戻る">&#8592;</button>
-    <div class="header-title" id="headerTitle">Anime Pitch Reviewer</div>
+    <div class="header-title" id="headerTitle">Game Ideas Reviewer</div>
     <div class="header-right" id="headerRight"></div>
   </header>
 
@@ -478,14 +479,14 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
   <div id="listView">
     <div class="search-wrap">
       <span class="search-icon">&#128269;</span>
-      <input type="text" id="searchInput" placeholder="企画を検索...">
+      <input type="text" id="searchInput" placeholder="ゲームアイデアを検索...">
     </div>
 
     <div class="filter-bar" id="typeFilter">
       <button class="filter-chip active" data-type="inbox">INBOX <span class="badge hidden" id="inboxBadge">0</span></button>
       <button class="filter-chip" data-type="all">すべて</button>
-      <button class="filter-chip" data-type="proposal">企画書</button>
-      <button class="filter-chip" data-type="seed">シード</button>
+      <button class="filter-chip" data-type="proposal">Proposal</button>
+      <button class="filter-chip" data-type="seed">Seed</button>
       <button class="filter-chip" data-type="liked">&#10084; ライク済</button>
       <button class="filter-chip" data-type="memo">&#9997; メモ付</button>
       <button class="filter-chip" data-type="archived">&#128451; アーカイブ</button>
@@ -499,13 +500,13 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
         <button class="active" data-mode="or">OR</button>
         <button data-mode="and">AND</button>
       </div>
-      <button class="ctrl-btn" id="sortBtn" data-sort="rating">評価順</button>
+      <button class="ctrl-btn" id="sortBtn" data-sort="rating">スコア順</button>
     </div>
 
     <div class="card-list" id="cardList"></div>
     <div class="empty-state hidden" id="emptyState">
       <div class="icon">&#128270;</div>
-      <p>条件に一致する企画がありません</p>
+      <p>条件に一致するアイデアがありません</p>
     </div>
   </div>
 
@@ -534,7 +535,7 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
     </div>
     <div class="memo-section" id="memoSection">
       <div class="memo-label">&#128221; メモ</div>
-      <textarea id="memoText" placeholder="この企画についてメモを残す..."></textarea>
+      <textarea id="memoText" placeholder="このアイデアについてメモを残す..."></textarea>
       <div class="memo-actions">
         <button class="memo-save-btn" id="memoSaveBtn">保存</button>
       </div>
@@ -559,7 +560,7 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
   <div class="dashboard" id="dashboardView">
     <div class="dash-grid" id="dashGrid"></div>
     <div class="dash-section" id="dashTags">
-      <h3>タグ別企画数</h3>
+      <h3>タグ別アイデア数</h3>
       <div id="dashTagList"></div>
     </div>
     <div class="dash-section">
@@ -653,12 +654,12 @@ let state = {
 // ===== Storage =====
 function loadStorage(){
   try{
-    const l = localStorage.getItem('ap_likes');
-    const m = localStorage.getItem('ap_memos');
-    const r = localStorage.getItem('ap_reviews');
-    const rd = localStorage.getItem('ap_read');
-    const ar = localStorage.getItem('ap_archived');
-    const ideas = localStorage.getItem('ap_ideas');
+    const l = localStorage.getItem('gi_likes');
+    const m = localStorage.getItem('gi_memos');
+    const r = localStorage.getItem('gi_reviews');
+    const rd = localStorage.getItem('gi_read');
+    const ar = localStorage.getItem('gi_archived');
+    const ideas = localStorage.getItem('gi_ideas');
     if(l) state.likes = JSON.parse(l);
     if(m) state.memos = JSON.parse(m);
     if(r) state.reviews = JSON.parse(r);
@@ -667,12 +668,12 @@ function loadStorage(){
     if(ideas) state.ideas = JSON.parse(ideas);
   }catch(e){}
 }
-function saveLikes(){ localStorage.setItem('ap_likes', JSON.stringify(state.likes)); }
-function saveMemos(){ localStorage.setItem('ap_memos', JSON.stringify(state.memos)); }
-function saveReviews(){ localStorage.setItem('ap_reviews', JSON.stringify(state.reviews)); }
-function saveRead(){ localStorage.setItem('ap_read', JSON.stringify(state.readItems)); }
-function saveArchived(){ localStorage.setItem('ap_archived', JSON.stringify(state.archivedItems)); }
-function saveIdeas(){ localStorage.setItem('ap_ideas', JSON.stringify(state.ideas)); }
+function saveLikes(){ localStorage.setItem('gi_likes', JSON.stringify(state.likes)); }
+function saveMemos(){ localStorage.setItem('gi_memos', JSON.stringify(state.memos)); }
+function saveReviews(){ localStorage.setItem('gi_reviews', JSON.stringify(state.reviews)); }
+function saveRead(){ localStorage.setItem('gi_read', JSON.stringify(state.readItems)); }
+function saveArchived(){ localStorage.setItem('gi_archived', JSON.stringify(state.archivedItems)); }
+function saveIdeas(){ localStorage.setItem('gi_ideas', JSON.stringify(state.ideas)); }
 
 // ===== Tag color map =====
 const tagColorMap = {};
@@ -682,19 +683,19 @@ function getTagColor(tag){
   return tagColorMap[tag];
 }
 
-// ===== Rating sort value =====
-function ratingVal(r){ return {S:4,A:3,B:2,C:1}[r]||0; }
+// ===== Score helpers =====
+function avgScore(p){ return ((p.commercial||0) + (p.streaming||0)) / 2; }
 
 // ===== All tags =====
 function getAllTags(){
   const s = new Set();
-  PROPOSALS_DATA.forEach(p => p.tags.forEach(t => s.add(t)));
+  GAME_IDEAS_DATA.forEach(p => p.tags.forEach(t => s.add(t)));
   return [...s];
 }
 
 // ===== Filtering & Sorting =====
 function getUnreadCount(){
-  return PROPOSALS_DATA.filter(p => !state.readItems[p.id] && !state.archivedItems[p.id]).length;
+  return GAME_IDEAS_DATA.filter(p => !state.readItems[p.id] && !state.archivedItems[p.id]).length;
 }
 
 function updateInboxBadge(){
@@ -705,7 +706,7 @@ function updateInboxBadge(){
 }
 
 function getFiltered(){
-  let list = PROPOSALS_DATA.slice();
+  let list = GAME_IDEAS_DATA.slice();
   // type filter
   if(state.typeFilter === 'inbox') list = list.filter(p => !state.archivedItems[p.id]);
   else if(state.typeFilter === 'archived') list = list.filter(p => state.archivedItems[p.id]);
@@ -718,7 +719,7 @@ function getFiltered(){
     const q = state.search.toLowerCase();
     list = list.filter(p =>
       p.title.toLowerCase().includes(q) ||
-      p.logline.toLowerCase().includes(q) ||
+      p.summary.toLowerCase().includes(q) ||
       p.tags.some(t => t.toLowerCase().includes(q))
     );
   }
@@ -732,7 +733,7 @@ function getFiltered(){
   }
   // sort
   if(state.sort === 'rating'){
-    list.sort((a,b) => ratingVal(b.rating) - ratingVal(a.rating));
+    list.sort((a,b) => avgScore(b) - avgScore(a));
   } else {
     list.sort((a,b) => a.title.localeCompare(b.title,'ja'));
   }
@@ -868,10 +869,13 @@ function renderCards(){
       ${hasMemo?'<div class="card-memo-indicator">&#128221; メモあり</div>':''}
       <div class="card-top">
         <div class="card-title">${p.title}</div>
-        <span class="card-type ${p.type}">${p.type==='proposal'?'企画書':'シード'}</span>
-        <span class="card-rating ${p.rating}">${p.rating}</span>
+        <span class="card-type ${p.type}">${p.type==='proposal'?'Proposal':'Seed'}</span>
+        <div class="card-scores">
+          <span class="card-score commercial" title="Commercial">${p.commercial||0}</span>
+          <span class="card-score streaming" title="Streaming">${p.streaming||0}</span>
+        </div>
       </div>
-      <div class="card-logline">${p.logline}</div>
+      <div class="card-logline">${p.summary}</div>
       <div class="card-footer">${tagsHtml}</div>
     </div>`;
   }).join('');
@@ -879,7 +883,7 @@ function renderCards(){
 }
 
 function renderDetail(id){
-  const p = PROPOSALS_DATA.find(x => x.id === id);
+  const p = GAME_IDEAS_DATA.find(x => x.id === id);
   if(!p) return;
   state.currentId = id;
   const liked = state.likes[id];
@@ -892,13 +896,14 @@ function renderDetail(id){
   document.getElementById('detailHero').innerHTML = `
     <div class="title">${p.title}</div>
     <div class="meta">
-      <span class="card-type ${p.type}">${p.type==='proposal'?'企画書':'シード'}</span>
-      <span class="card-rating ${p.rating}">${p.rating}</span>
+      <span class="card-type ${p.type}">${p.type==='proposal'?'Proposal':'Seed'}</span>
+      <span class="card-score commercial" title="Commercial">&#128176; ${p.commercial||0}</span>
+      <span class="card-score streaming" title="Streaming">&#127909; ${p.streaming||0}</span>
     </div>
     <div class="tags">${tagsHtml}</div>
     <div class="highlight-box">
-      <div class="label">Logline</div>
-      <p>${p.logline}</p>
+      <div class="label">Concept</div>
+      <p>${p.summary}</p>
     </div>
     ${p.hook ? `<div class="highlight-box hook">
       <div class="label">Hook</div>
@@ -928,20 +933,20 @@ function renderDetail(id){
 }
 
 function renderDashboard(){
-  const total = PROPOSALS_DATA.length;
+  const total = GAME_IDEAS_DATA.length;
   const likeCount = Object.keys(state.likes).filter(k => state.likes[k]).length;
   const memoCount = Object.keys(state.memos).filter(k => state.memos[k] && state.memos[k].trim()).length;
   const reviewCount = Object.keys(state.reviews).filter(k => state.reviews[k]).length;
 
   document.getElementById('dashGrid').innerHTML = `
-    <div class="dash-card"><div class="num">${total}</div><div class="lbl">総企画数</div></div>
+    <div class="dash-card"><div class="num">${total}</div><div class="lbl">総アイデア数</div></div>
     <div class="dash-card"><div class="num">${likeCount}</div><div class="lbl">ライク</div></div>
     <div class="dash-card"><div class="num">${memoCount}</div><div class="lbl">メモ</div></div>
     <div class="dash-card"><div class="num" style="color:var(--cyan)">${reviewCount}</div><div class="lbl">レビュー</div></div>
   `;
 
   const tagCounts = {};
-  PROPOSALS_DATA.forEach(p => p.tags.forEach(t => { tagCounts[t] = (tagCounts[t]||0)+1; }));
+  GAME_IDEAS_DATA.forEach(p => p.tags.forEach(t => { tagCounts[t] = (tagCounts[t]||0)+1; }));
   const sorted = Object.entries(tagCounts).sort((a,b)=>b[1]-a[1]);
   const max = sorted.length > 0 ? sorted[0][1] : 1;
 
@@ -970,7 +975,7 @@ function showView(view){
   });
 
   if(view === 'list'){
-    document.getElementById('headerTitle').textContent = 'Anime Pitch Reviewer';
+    document.getElementById('headerTitle').textContent = 'Game Ideas Reviewer';
     renderCards();
   } else if(view === 'ideas'){
     document.getElementById('headerTitle').textContent = 'アイデア帳';
@@ -1023,7 +1028,7 @@ function init(){
   // Sort
   document.getElementById('sortBtn').addEventListener('click', e => {
     state.sort = state.sort === 'rating' ? 'name' : 'rating';
-    e.target.textContent = state.sort === 'rating' ? '評価順' : '名前順';
+    e.target.textContent = state.sort === 'rating' ? 'スコア順' : '名前順';
     e.target.classList.toggle('active', state.sort === 'name');
     renderCards();
   });
@@ -1227,15 +1232,15 @@ function init(){
   document.getElementById('exportFeedbackBtn').addEventListener('click', () => {
     const feedback = {
       exportDate: new Date().toISOString(),
-      summary: { total: PROPOSALS_DATA.length, reviewed: Object.keys(state.reviews).length, liked: Object.keys(state.likes).filter(k=>state.likes[k]).length },
+      summary: { total: GAME_IDEAS_DATA.length, reviewed: Object.keys(state.reviews).length, liked: Object.keys(state.likes).filter(k=>state.likes[k]).length },
       reviews: []
     };
     for(const [id, r] of Object.entries(state.reviews)){
-      const p = PROPOSALS_DATA.find(x => x.id === id);
+      const p = GAME_IDEAS_DATA.find(x => x.id === id);
       if(!p || !r) continue;
       feedback.reviews.push({
         id, title: p.title, type: p.type, rating: r.rating||0, status: r.status||'', comment: r.comment||'',
-        currentRating: p.rating, tags: p.tags, logline: p.logline, memo: state.memos[id]||'',
+        commercial: p.commercial||0, streaming: p.streaming||0, tags: p.tags, summary: p.summary, memo: state.memos[id]||'',
         liked: !!state.likes[id], timestamp: r.timestamp||''
       });
     }
@@ -1252,13 +1257,13 @@ function init(){
   // Export (liked)
   document.getElementById('exportBtn').addEventListener('click', () => {
     const likedIds = Object.keys(state.likes).filter(k => state.likes[k]);
-    const likedData = PROPOSALS_DATA.filter(p => likedIds.includes(p.id));
+    const likedData = GAME_IDEAS_DATA.filter(p => likedIds.includes(p.id));
     const json = JSON.stringify(likedData, null, 2);
     const blob = new Blob([json], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'liked_proposals.json';
+    a.download = 'liked_game_ideas.json';
     a.click();
     URL.revokeObjectURL(url);
     showToast('エクスポートしました');
@@ -1275,10 +1280,10 @@ function init(){
 }
 
   // ===== GitHub Sync =====
-  const SYNC_REPO = 'studiogosso/anime-pitch-app';
+  const SYNC_REPO = 'studiogosso/game-ideas-app';
   const SYNC_FILE = 'user-data.json';
-  let syncToken = localStorage.getItem('ap_sync_token') || '';
-  let syncSha = localStorage.getItem('ap_sync_sha') || '';
+  let syncToken = localStorage.getItem('gi_sync_token') || '';
+  let syncSha = localStorage.getItem('gi_sync_sha') || '';
   let syncTimer = null;
 
   function getSyncData(){
@@ -1343,7 +1348,7 @@ function init(){
       }
       const result = await res.json();
       syncSha = result.content.sha;
-      localStorage.setItem('ap_sync_sha', syncSha);
+      localStorage.setItem('gi_sync_sha', syncSha);
       updateSyncUI('ok', '同期済み ' + new Date().toLocaleTimeString());
     }catch(e){
       console.error('Sync error:', e);
@@ -1359,10 +1364,10 @@ function init(){
       if(res.ok){
         const data = await res.json();
         syncSha = data.sha;
-        localStorage.setItem('ap_sync_sha', syncSha);
+        localStorage.setItem('gi_sync_sha', syncSha);
       } else {
         syncSha = '';
-        localStorage.removeItem('ap_sync_sha');
+        localStorage.removeItem('gi_sync_sha');
       }
     }catch(e){ syncSha = ''; }
   }
@@ -1393,7 +1398,7 @@ function init(){
     const token = input.value.trim();
     if(!token || token === '••••••••••') return;
     syncToken = token;
-    localStorage.setItem('ap_sync_token', syncToken);
+    localStorage.setItem('gi_sync_token', syncToken);
     await fetchSyncSha();
     await syncToGitHub();
     initSyncUI();
@@ -1403,8 +1408,8 @@ function init(){
   document.getElementById('syncDisconnectBtn').addEventListener('click', () => {
     syncToken = '';
     syncSha = '';
-    localStorage.removeItem('ap_sync_token');
-    localStorage.removeItem('ap_sync_sha');
+    localStorage.removeItem('gi_sync_token');
+    localStorage.removeItem('gi_sync_sha');
     initSyncUI();
     showToast('同期を解除しました');
   });
@@ -1417,7 +1422,7 @@ function init(){
     e.preventDefault();
     deferredPrompt = e;
     const banner = document.getElementById('installBanner');
-    if(!localStorage.getItem('ap_install_dismissed')){
+    if(!localStorage.getItem('gi_install_dismissed')){
       banner.classList.remove('hidden');
     }
   });
@@ -1435,7 +1440,7 @@ function init(){
 
   document.getElementById('installClose').addEventListener('click', () => {
     document.getElementById('installBanner').classList.add('hidden');
-    localStorage.setItem('ap_install_dismissed', '1');
+    localStorage.setItem('gi_install_dismissed', '1');
   });
 
   window.addEventListener('appinstalled', () => {
@@ -1472,7 +1477,7 @@ function init(){
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'anime-pitch-backup-' + new Date().toISOString().slice(0,10) + '.json';
+    a.download = 'game-ideas-backup-' + new Date().toISOString().slice(0,10) + '.json';
     a.click();
     URL.revokeObjectURL(url);
     showToast('バックアップを書き出しました');
