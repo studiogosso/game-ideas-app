@@ -207,6 +207,10 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
 .detail-action-btn.like-btn.liked{background:rgba(236,72,153,0.15);color:var(--pink)}
 .detail-action-btn.archive-btn{background:var(--bg3);color:var(--text2)}
 .detail-action-btn.archive-btn.archived{background:rgba(52,211,153,0.15);color:var(--green)}
+.detail-action-btn.pass-btn{background:rgba(248,113,113,0.15);color:var(--red)}
+.detail-action-btn.pass-btn.passed{background:rgba(248,113,113,0.25);color:var(--red)}
+.detail-action-btn.pono-btn{background:rgba(124,92,252,0.15);color:var(--accent)}
+.detail-action-btn.pono-btn:active{transform:scale(0.96)}
 .detail-action-btn:active{transform:scale(0.96)}
 
 /* ===== Memo ===== */
@@ -449,6 +453,120 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
   position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0;
 }
 
+/* ===== PONO Page ===== */
+.pono-page{display:none;padding:0 0 32px}
+.pono-page.visible{display:block}
+.pono-project-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px}
+.pono-project-card{
+  background:var(--bg2);border-radius:var(--card-radius);padding:16px;
+  border:1px solid var(--bg4);transition:var(--transition);
+  position:relative;overflow:hidden;animation:cardIn 0.3s ease both;cursor:pointer;
+}
+.pono-project-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--pink));opacity:0;transition:var(--transition);
+}
+.pono-project-card:active{transform:scale(0.985)}
+.pono-project-card:active::before{opacity:1}
+.pono-project-card .ppc-title{font-size:1rem;font-weight:700;margin-bottom:6px}
+.pono-project-card .ppc-meta{display:flex;align-items:center;gap:10px;font-size:0.75rem;color:var(--text3)}
+.pono-project-card .ppc-memo-count{color:var(--accent);font-weight:600}
+.pono-memo-header{
+  display:flex;align-items:center;gap:10px;padding:12px 16px;
+  background:var(--bg2);border-bottom:1px solid var(--bg4);
+}
+.pono-memo-back{
+  width:32px;height:32px;border-radius:8px;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  flex-shrink:0;transition:var(--transition);
+}
+.pono-memo-back:active{transform:scale(0.9)}
+.pono-memo-title{flex:1;font-size:0.95rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pono-tag-filter{
+  display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+  padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--bg4);
+}
+.pono-tag-filter::-webkit-scrollbar{display:none}
+.pono-tag-chip{
+  flex-shrink:0;padding:6px 12px;border-radius:16px;font-size:0.75rem;font-weight:600;
+  background:var(--bg3);color:var(--text2);transition:var(--transition);
+  border:1px solid transparent;white-space:nowrap;cursor:pointer;
+}
+.pono-tag-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pono-tag-chip:active{transform:scale(0.95)}
+.pono-memo-list{padding:12px 16px;display:flex;flex-direction:column;gap:10px;min-height:200px}
+.pono-memo-card{
+  background:var(--bg2);border-radius:12px;padding:12px 14px;
+  border:1px solid var(--bg4);transition:var(--transition);animation:cardIn 0.25s ease both;
+}
+.pono-memo-text{font-size:0.88rem;line-height:1.6;color:var(--text);white-space:pre-wrap;word-break:break-word}
+.pono-memo-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.pono-memo-tag{
+  display:inline-flex;align-items:center;padding:2px 8px;border-radius:8px;
+  font-size:0.68rem;font-weight:600;white-space:nowrap;
+}
+.pono-memo-tag.tag-idea{background:rgba(124,92,252,0.15);color:#7c5cfc}
+.pono-memo-tag.tag-scene{background:rgba(236,72,153,0.15);color:#ec4899}
+.pono-memo-tag.tag-character{background:rgba(245,158,11,0.15);color:#f59e0b}
+.pono-memo-tag.tag-world{background:rgba(16,185,129,0.15);color:#10b981}
+.pono-memo-tag.tag-script{background:rgba(59,130,246,0.15);color:#3b82f6}
+.pono-memo-tag.tag-asset{background:rgba(107,114,128,0.15);color:#6b7280}
+.pono-memo-bottom{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:0.68rem;color:var(--text3)}
+.pono-memo-actions{display:flex;gap:5px;margin-left:auto}
+.pono-memo-action-btn{
+  width:28px;height:28px;border-radius:7px;background:var(--bg3);
+  display:flex;align-items:center;justify-content:center;font-size:0.78rem;
+  transition:var(--transition);
+}
+.pono-memo-action-btn:active{transform:scale(0.88)}
+.pono-fab{
+  position:fixed;right:20px;bottom:80px;width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--pink));color:#fff;
+  font-size:1.6rem;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(124,92,252,0.4);z-index:90;
+  transition:var(--transition);
+}
+.pono-fab.hidden{display:none}
+.pono-fab:active{transform:scale(0.92)}
+.memo-edit-modal .modal{max-height:90vh;overflow-y:auto}
+.memo-tag-select{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.memo-tag-btn{
+  padding:5px 10px;border-radius:8px;font-size:0.72rem;font-weight:600;
+  background:var(--bg3);color:var(--text2);border:1px solid transparent;
+  transition:var(--transition);cursor:pointer;
+}
+.memo-tag-btn.active.tag-idea{background:rgba(124,92,252,0.2);color:#7c5cfc;border-color:#7c5cfc}
+.memo-tag-btn.active.tag-scene{background:rgba(236,72,153,0.2);color:#ec4899;border-color:#ec4899}
+.memo-tag-btn.active.tag-character{background:rgba(245,158,11,0.2);color:#f59e0b;border-color:#f59e0b}
+.memo-tag-btn.active.tag-world{background:rgba(16,185,129,0.2);color:#10b981;border-color:#10b981}
+.memo-tag-btn.active.tag-script{background:rgba(59,130,246,0.2);color:#3b82f6;border-color:#3b82f6}
+.memo-tag-btn.active.tag-asset{background:rgba(107,114,128,0.2);color:#6b7280;border-color:#6b7280}
+.memo-edit-textarea{
+  width:100%;min-height:120px;max-height:300px;padding:12px;
+  background:var(--bg);border:1px solid var(--bg4);border-radius:10px;
+  font-size:0.9rem;line-height:1.6;color:var(--text);resize:vertical;
+  margin-bottom:12px;transition:var(--transition);
+}
+.memo-edit-textarea:focus{border-color:var(--accent)}
+
+/* ===== Update Badge ===== */
+.update-badge{
+  position:absolute;top:12px;left:24px;
+  background:linear-gradient(135deg,#ff6b6b,#ee5a24);color:#fff;
+  font-size:0.6rem;font-weight:800;padding:2px 6px;border-radius:4px;
+  letter-spacing:0.5px;z-index:2;
+}
+
+/* ===== Update Diff ===== */
+.update-diff{background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.2);border-radius:10px;padding:12px;margin-top:12px}
+.diff-label{font-size:0.8rem;font-weight:700;color:#ff6b6b;margin-bottom:8px}
+.diff-item{margin-bottom:8px}
+.diff-field{font-size:0.75rem;font-weight:600;color:var(--text2);display:block;margin-bottom:4px}
+.diff-old{font-size:0.82rem;color:#ff6b6b;text-decoration:line-through;opacity:0.7;margin-bottom:4px;line-height:1.5}
+.diff-new{font-size:0.82rem;color:#44dd88;line-height:1.5}
+.diff-toggle-btn{margin-top:6px;padding:6px 14px;border-radius:8px;font-size:0.78rem;font-weight:600;background:var(--bg3);color:#ff6b6b;border:1px solid rgba(255,107,107,0.3);cursor:pointer}
+.diff-toggle-btn:active{transform:scale(0.95)}
+
 /* ===== Utilities ===== */
 .hidden{display:none!important}
 </style>
@@ -490,6 +608,7 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
       <button class="filter-chip" data-type="liked">&#10084; ライク済</button>
       <button class="filter-chip" data-type="memo">&#9997; メモ付</button>
       <button class="filter-chip" data-type="archived">&#128451; アーカイブ</button>
+      <button class="filter-chip" data-type="passed">&#128683; 見送り</button>
     </div>
 
     <div class="filter-bar" id="tagFilter"></div>
@@ -556,6 +675,15 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
     </div>
   </div>
 
+  <!-- PONO View (仮組み) -->
+  <div class="pono-page" id="ponoView">
+    <div class="pono-project-list" id="ponoProjectList"></div>
+    <div class="empty-state hidden" id="ponoEmpty">
+      <div style="font-size:3rem;opacity:0.5">&#127959;</div>
+      <p>アイデアの詳細画面から「仮組みへ」で追加</p>
+    </div>
+  </div>
+
   <!-- Dashboard View -->
   <div class="dashboard" id="dashboardView">
     <div class="dash-grid" id="dashGrid"></div>
@@ -599,11 +727,18 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
     <span class="nav-icon">&#128161;</span>
     <span>アイデア</span>
   </button>
+  <button class="nav-item" data-view="pono">
+    <span class="nav-icon">&#127959;</span>
+    <span>仮組み</span>
+  </button>
   <button class="nav-item" data-view="dashboard">
-    <span class="nav-icon">&#128202;</span>
+    <span class="nav-icon">&#9881;</span>
     <span>設定</span>
   </button>
 </nav>
+
+<!-- PONO FAB -->
+<button class="pono-fab hidden" id="ponoFab">+</button>
 
 <!-- Install Banner (hidden by default) -->
 <div class="install-banner hidden" id="installBanner">
@@ -628,17 +763,45 @@ input,textarea{font:inherit;border:none;background:none;color:inherit;outline:no
   </div>
 </div>
 
+<!-- Memo Edit Modal -->
+<div class="modal-overlay hidden memo-edit-modal" id="memoEditModal">
+  <div class="modal">
+    <h3 id="memoModalTitle">メモを追加</h3>
+    <div class="memo-tag-select" id="memoTagSelect">
+      <button class="memo-tag-btn tag-idea" data-tag="idea">&#128161; アイデア</button>
+      <button class="memo-tag-btn tag-scene" data-tag="scene">&#127916; シーン</button>
+      <button class="memo-tag-btn tag-character" data-tag="character">&#128100; キャラ</button>
+      <button class="memo-tag-btn tag-world" data-tag="world">&#127759; 世界観</button>
+      <button class="memo-tag-btn tag-script" data-tag="script">&#128221; 脚本</button>
+      <button class="memo-tag-btn tag-asset" data-tag="asset">&#128193; 素材</button>
+    </div>
+    <textarea class="memo-edit-textarea" id="memoEditText" placeholder="メモの内容を入力..."></textarea>
+    <button class="modal-btn primary" id="memoEditSaveBtn">保存</button>
+    <button class="modal-btn danger" id="memoEditCancelBtn">キャンセル</button>
+  </div>
+</div>
+
 <script src="data.js"></script>
 <script>
 (function(){
 "use strict";
 
-// ===== State =====
+// ===== Constants =====
 const TAG_COLORS = ['#7c5cfc','#ec4899','#f59e0b','#10b981','#06b6d4','#8b5cf6','#ef4444','#3b82f6','#14b8a6','#f97316'];
+const PONO_TAGS = {
+  idea: '\u{1F4A1} アイデア',
+  scene: '\u{1F3AC} シーン',
+  character: '\u{1F464} キャラ',
+  world: '\u{1F30F} 世界観',
+  script: '\u{1F4DD} 脚本',
+  asset: '\u{1F4C1} 素材'
+};
+
+// ===== State =====
 let state = {
-  view: 'list',        // list | detail | dashboard | ideas
+  view: 'list',        // list | detail | dashboard | ideas | pono
   search: '',
-  typeFilter: 'inbox', // inbox | all | proposal | seed | liked | memo | archived
+  typeFilter: 'inbox', // inbox | all | proposal | seed | liked | memo | archived | passed
   selectedTags: [],
   tagMode: 'or',       // or | and
   sort: 'rating',      // rating | name
@@ -648,24 +811,32 @@ let state = {
   reviews: {},         // id -> {rating, status, comment, timestamp}
   readItems: {},       // id -> true
   archivedItems: {},   // id -> true
+  passedItems: {},     // id -> true
   ideas: [],           // [{id, text, createdAt, done}]
+  seenHashes: {},
+  prevVersions: {},
+  pono: {
+    sentIds: [],
+    activeId: null,
+    notes: {} // { [gameIdeaId]: [{id, text, tags:[], createdAt, updatedAt}] }
+  }
 };
 
 // ===== Storage =====
 function loadStorage(){
   try{
-    const l = localStorage.getItem('gi_likes');
-    const m = localStorage.getItem('gi_memos');
-    const r = localStorage.getItem('gi_reviews');
-    const rd = localStorage.getItem('gi_read');
-    const ar = localStorage.getItem('gi_archived');
-    const ideas = localStorage.getItem('gi_ideas');
-    if(l) state.likes = JSON.parse(l);
-    if(m) state.memos = JSON.parse(m);
-    if(r) state.reviews = JSON.parse(r);
-    if(rd) state.readItems = JSON.parse(rd);
-    if(ar) state.archivedItems = JSON.parse(ar);
-    if(ideas) state.ideas = JSON.parse(ideas);
+    const keys = ['likes','memos','reviews','readItems','archivedItems','passedItems','ideas'];
+    const storageKeys = ['gi_likes','gi_memos','gi_reviews','gi_read','gi_archived','gi_passed','gi_ideas'];
+    keys.forEach((k,i) => {
+      const v = localStorage.getItem(storageKeys[i]);
+      if(v) state[k] = JSON.parse(v);
+    });
+    const pono = localStorage.getItem('gi_pono');
+    if(pono) state.pono = Object.assign(state.pono, JSON.parse(pono));
+    const sh = localStorage.getItem('gi_seen_hashes');
+    if(sh) state.seenHashes = JSON.parse(sh);
+    const pv = localStorage.getItem('gi_prev_versions');
+    if(pv) state.prevVersions = JSON.parse(pv);
   }catch(e){}
 }
 function saveLikes(){ localStorage.setItem('gi_likes', JSON.stringify(state.likes)); }
@@ -673,7 +844,11 @@ function saveMemos(){ localStorage.setItem('gi_memos', JSON.stringify(state.memo
 function saveReviews(){ localStorage.setItem('gi_reviews', JSON.stringify(state.reviews)); }
 function saveRead(){ localStorage.setItem('gi_read', JSON.stringify(state.readItems)); }
 function saveArchived(){ localStorage.setItem('gi_archived', JSON.stringify(state.archivedItems)); }
+function savePassedItems(){ localStorage.setItem('gi_passed', JSON.stringify(state.passedItems)); }
 function saveIdeas(){ localStorage.setItem('gi_ideas', JSON.stringify(state.ideas)); }
+function savePono(){ localStorage.setItem('gi_pono', JSON.stringify(state.pono)); }
+function saveSeenHashes(){ localStorage.setItem('gi_seen_hashes', JSON.stringify(state.seenHashes)); }
+function savePrevVersions(){ localStorage.setItem('gi_prev_versions', JSON.stringify(state.prevVersions)); }
 
 // ===== Tag color map =====
 const tagColorMap = {};
@@ -693,9 +868,69 @@ function getAllTags(){
   return [...s];
 }
 
+// ===== Update Detection =====
+function hashGameIdea(p){
+  const str = (p.summary||'') + (p.hook||'') + (p.content||'') + (p.tags||[]).join(',');
+  let h = 0;
+  for(let i = 0; i < str.length; i++){ h = ((h << 5) - h + str.charCodeAt(i)) | 0; }
+  return h.toString(36);
+}
+
+function checkForUpdates(){
+  let updatedCount = 0;
+  GAME_IDEAS_DATA.forEach(p => {
+    const newHash = hashGameIdea(p);
+    const oldHash = state.seenHashes[p.id];
+    if(oldHash && oldHash !== newHash){
+      const prev = state.prevVersions[p.id] || {};
+      state.prevVersions[p.id] = {
+        summary: prev.summary_current || p.summary,
+        hook: prev.hook_current || p.hook,
+        content: prev.content_current || p.content,
+        savedAt: new Date().toISOString(),
+        summary_current: p.summary,
+        hook_current: p.hook,
+        content_current: p.content
+      };
+      delete state.readItems[p.id];
+      updatedCount++;
+    } else {
+      if(!state.prevVersions[p.id]) state.prevVersions[p.id] = {};
+      state.prevVersions[p.id].summary_current = p.summary;
+      state.prevVersions[p.id].hook_current = p.hook;
+      state.prevVersions[p.id].content_current = p.content;
+    }
+    state.seenHashes[p.id] = newHash;
+  });
+  saveSeenHashes();
+  savePrevVersions();
+  if(updatedCount > 0){
+    saveRead();
+    showToast(updatedCount + '件のアイデアが更新されました');
+  }
+}
+
+window.togglePrevContent = function(){
+  const area = document.getElementById('prevContentArea');
+  if(!area) return;
+  if(area.classList.contains('hidden')){
+    const prev = state.prevVersions[state.currentId];
+    if(prev && prev.content){
+      document.getElementById('prevContentBody').innerHTML = parseMD(prev.content);
+    }
+    area.classList.remove('hidden');
+  } else {
+    area.classList.add('hidden');
+  }
+};
+
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 // ===== Filtering & Sorting =====
 function getUnreadCount(){
-  return GAME_IDEAS_DATA.filter(p => !state.readItems[p.id] && !state.archivedItems[p.id]).length;
+  return GAME_IDEAS_DATA.filter(p => !state.readItems[p.id] && !state.archivedItems[p.id] && !state.passedItems[p.id]).length;
 }
 
 function updateInboxBadge(){
@@ -708,10 +943,11 @@ function updateInboxBadge(){
 function getFiltered(){
   let list = GAME_IDEAS_DATA.slice();
   // type filter
-  if(state.typeFilter === 'inbox') list = list.filter(p => !state.archivedItems[p.id]);
+  if(state.typeFilter === 'inbox') list = list.filter(p => !state.archivedItems[p.id] && !state.passedItems[p.id]);
   else if(state.typeFilter === 'archived') list = list.filter(p => state.archivedItems[p.id]);
-  else if(state.typeFilter === 'proposal') list = list.filter(p => p.type === 'proposal' && !state.archivedItems[p.id]);
-  else if(state.typeFilter === 'seed') list = list.filter(p => p.type === 'seed' && !state.archivedItems[p.id]);
+  else if(state.typeFilter === 'passed') list = list.filter(p => state.passedItems[p.id]);
+  else if(state.typeFilter === 'proposal') list = list.filter(p => p.type === 'proposal' && !state.archivedItems[p.id] && !state.passedItems[p.id]);
+  else if(state.typeFilter === 'seed') list = list.filter(p => p.type === 'seed' && !state.archivedItems[p.id] && !state.passedItems[p.id]);
   else if(state.typeFilter === 'liked') list = list.filter(p => state.likes[p.id]);
   else if(state.typeFilter === 'memo') list = list.filter(p => state.memos[p.id] && state.memos[p.id].trim());
   // search
@@ -859,23 +1095,25 @@ function renderCards(){
     const liked = state.likes[p.id];
     const isRead = state.readItems[p.id];
     const hasMemo = state.memos[p.id] && state.memos[p.id].trim();
+    const isUpdated = state.prevVersions[p.id] && state.prevVersions[p.id].savedAt && !state.readItems[p.id];
     const tagsHtml = p.tags.map(t => {
       const c = getTagColor(t);
       return `<span class="tag-badge" style="background:${c}22;color:${c}">${t}</span>`;
     }).join('');
     return `<div class="card${isRead?' read':''}" data-id="${p.id}" style="animation-delay:${i*0.04}s">
       ${!isRead?'<div class="unread-dot"></div>':''}
+      ${isUpdated?'<div class="update-badge">更新</div>':''}
       <button class="card-heart${liked?' liked':''}" data-heart="${p.id}">${liked?'&#10084;':'&#9825;'}</button>
       ${hasMemo?'<div class="card-memo-indicator">&#128221; メモあり</div>':''}
       <div class="card-top">
-        <div class="card-title">${p.title}</div>
+        <div class="card-title">${escapeHtml(p.title)}</div>
         <span class="card-type ${p.type}">${p.type==='proposal'?'Proposal':'Seed'}</span>
         <div class="card-scores">
           <span class="card-score commercial" title="Commercial">${p.commercial||0}</span>
           <span class="card-score streaming" title="Streaming">${p.streaming||0}</span>
         </div>
       </div>
-      <div class="card-logline">${p.summary}</div>
+      <div class="card-logline">${escapeHtml(p.summary)}</div>
       <div class="card-footer">${tagsHtml}</div>
     </div>`;
   }).join('');
@@ -893,8 +1131,42 @@ function renderDetail(id){
     return `<span class="tag-badge" style="background:${c}22;color:${c}">${t}</span>`;
   }).join('');
 
+  // Build diff HTML if previous version exists
+  const prev = state.prevVersions[id];
+  const hasPrev = prev && prev.savedAt;
+  let diffHtml = '';
+  if(hasPrev){
+    diffHtml = '<div class="update-diff">';
+    diffHtml += '<div class="diff-label">&#128221; 更新あり (' + new Date(prev.savedAt).toLocaleDateString('ja-JP') + ')</div>';
+    if(prev.summary && prev.summary !== p.summary){
+      diffHtml += '<div class="diff-item"><span class="diff-field">Concept変更:</span>';
+      diffHtml += '<div class="diff-old">' + escapeHtml(prev.summary) + '</div>';
+      diffHtml += '<div class="diff-new">' + escapeHtml(p.summary) + '</div></div>';
+    }
+    if(prev.hook && prev.hook !== p.hook){
+      diffHtml += '<div class="diff-item"><span class="diff-field">Hook変更:</span>';
+      diffHtml += '<div class="diff-old">' + escapeHtml(prev.hook) + '</div>';
+      diffHtml += '<div class="diff-new">' + escapeHtml(p.hook) + '</div></div>';
+    }
+    if(prev.content && prev.content !== p.content){
+      diffHtml += '<div class="diff-item"><span class="diff-field">本文が更新されています</span>';
+      diffHtml += '<button class="diff-toggle-btn" onclick="togglePrevContent()">前のバージョンを表示</button></div>';
+    }
+    diffHtml += '</div>';
+  }
+  let prevContentHtml = '';
+  if(hasPrev && prev.content && prev.content !== p.content){
+    prevContentHtml = `<div id="prevContentArea" class="hidden" style="margin:12px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:0.8rem;color:#ff6b6b;font-weight:700;">前のバージョン</span>
+        <button onclick="togglePrevContent()" style="font-size:0.75rem;color:var(--text3);background:var(--bg3);border:none;padding:4px 10px;border-radius:6px;cursor:pointer;">閉じる</button>
+      </div>
+      <div id="prevContentBody" class="md-content" style="opacity:0.7;border-left:3px solid #ff6b6b;padding-left:12px;"></div>
+    </div>`;
+  }
+
   document.getElementById('detailHero').innerHTML = `
-    <div class="title">${p.title}</div>
+    <div class="title">${escapeHtml(p.title)}</div>
     <div class="meta">
       <span class="card-type ${p.type}">${p.type==='proposal'?'Proposal':'Seed'}</span>
       <span class="card-score commercial" title="Commercial">&#128176; ${p.commercial||0}</span>
@@ -903,22 +1175,29 @@ function renderDetail(id){
     <div class="tags">${tagsHtml}</div>
     <div class="highlight-box">
       <div class="label">Concept</div>
-      <p>${p.summary}</p>
+      <p>${escapeHtml(p.summary)}</p>
     </div>
     ${p.hook ? `<div class="highlight-box hook">
       <div class="label">Hook</div>
-      <p>${p.hook}</p>
+      <p>${escapeHtml(p.hook)}</p>
     </div>` : ''}
+    ${diffHtml}
+    ${prevContentHtml}
   `;
 
   const isArchived = state.archivedItems[id];
+  const isPassed = state.passedItems[id];
   document.getElementById('detailActions').innerHTML = `
     <button class="detail-action-btn like-btn${liked?' liked':''}" id="detailLikeBtn">
       ${liked?'&#10084; ライク済':'&#9825; ライクする'}
     </button>
     <button class="detail-action-btn archive-btn${isArchived?' archived':''}" id="detailArchiveBtn">
-      ${isArchived?'&#9989; アーカイブ済':'&#128451; アーカイブ'}
+      ${isArchived?'&#9989; アーカイブ済':'&#128230; アーカイブ'}
     </button>
+    <button class="detail-action-btn pass-btn${isPassed?' passed':''}" id="detailPassBtn">
+      ${isPassed?'&#128683; 見送り済':'&#128078; 見送り'}
+    </button>
+    <button class="detail-action-btn pono-btn" id="detailPonoBtn">&#127959; 仮組みへ</button>
   `;
 
   // Auto mark as read
@@ -937,12 +1216,14 @@ function renderDashboard(){
   const likeCount = Object.keys(state.likes).filter(k => state.likes[k]).length;
   const memoCount = Object.keys(state.memos).filter(k => state.memos[k] && state.memos[k].trim()).length;
   const reviewCount = Object.keys(state.reviews).filter(k => state.reviews[k]).length;
+  const ponoCount = state.pono.sentIds.length;
 
   document.getElementById('dashGrid').innerHTML = `
     <div class="dash-card"><div class="num">${total}</div><div class="lbl">総アイデア数</div></div>
     <div class="dash-card"><div class="num">${likeCount}</div><div class="lbl">ライク</div></div>
     <div class="dash-card"><div class="num">${memoCount}</div><div class="lbl">メモ</div></div>
-    <div class="dash-card"><div class="num" style="color:var(--cyan)">${reviewCount}</div><div class="lbl">レビュー</div></div>
+    <div class="dash-card"><div class="num" style="-webkit-text-fill-color:var(--cyan)">${reviewCount}</div><div class="lbl">レビュー</div></div>
+    <div class="dash-card"><div class="num" style="-webkit-text-fill-color:var(--green)">${ponoCount}</div><div class="lbl">仮組み</div></div>
   `;
 
   const tagCounts = {};
@@ -967,11 +1248,14 @@ function showView(view){
   document.getElementById('listView').classList.toggle('hidden', view !== 'list');
   document.getElementById('detailView').className = view === 'detail' ? 'detail-page visible' : 'detail-page';
   document.getElementById('ideasView').className = view === 'ideas' ? 'ideas-page visible' : 'ideas-page';
+  document.getElementById('ponoView').className = view === 'pono' ? 'pono-page visible' : 'pono-page';
   document.getElementById('dashboardView').className = view === 'dashboard' ? 'dashboard visible' : 'dashboard';
-  document.getElementById('backBtn').classList.toggle('hidden', view === 'list' || view === 'dashboard' || view === 'ideas');
+  document.getElementById('backBtn').classList.toggle('hidden', !['detail'].includes(view));
+  document.getElementById('ponoFab').classList.toggle('hidden', !(view === 'pono' && state.pono.activeId));
 
   document.querySelectorAll('.nav-item').forEach(n => {
-    n.classList.toggle('active', n.dataset.view === (view === 'detail' ? 'list' : view));
+    const navView = n.dataset.view;
+    n.classList.toggle('active', navView === (view === 'detail' ? 'list' : view));
   });
 
   if(view === 'list'){
@@ -980,6 +1264,9 @@ function showView(view){
   } else if(view === 'ideas'){
     document.getElementById('headerTitle').textContent = 'アイデア帳';
     renderIdeas();
+  } else if(view === 'pono'){
+    document.getElementById('headerTitle').textContent = '仮組みスタジオ';
+    renderPonoView();
   } else if(view === 'dashboard'){
     document.getElementById('headerTitle').textContent = '設定';
     renderDashboard();
@@ -987,9 +1274,166 @@ function showView(view){
   window.scrollTo(0,0);
 }
 
+// ===== Ideas System =====
+function renderIdeas(){
+  const list = state.ideas;
+  const container = document.getElementById('ideaList');
+  const empty = document.getElementById('ideaEmpty');
+  if(list.length === 0){ container.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  container.innerHTML = list.map((idea,i) => `
+    <div class="idea-card${idea.done?' done':''}" data-idx="${i}">
+      <div class="idea-text">${escapeHtml(idea.text)}</div>
+      <div class="idea-meta">
+        <span>${new Date(idea.createdAt).toLocaleDateString('ja-JP')}</span>
+        <div class="idea-actions">
+          <button class="idea-action" data-idea-done="${i}" title="${idea.done?'戻す':'完了'}">${idea.done?'&#8634;':'&#10003;'}</button>
+          <button class="idea-action" data-idea-del="${i}" title="削除">&#128465;</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// =============================
+// ===== PONO SYSTEM START =====
+// =============================
+
+let ponoTagFilter = 'all'; // 'all' | tag key
+
+function renderPonoView(){
+  const activeId = state.pono.activeId;
+  const ponoView = document.getElementById('ponoView');
+  document.getElementById('ponoFab').classList.toggle('hidden', !(state.view==='pono' && activeId));
+
+  if(activeId){
+    const p = GAME_IDEAS_DATA.find(x=>x.id===activeId);
+    const projectTitle = p ? p.title : activeId;
+    const notes = state.pono.notes[activeId] || [];
+    const filtered = ponoTagFilter==='all' ? notes : notes.filter(n => n.tags && n.tags.includes(ponoTagFilter));
+    let tagChipsHtml = '<div class="pono-tag-filter">';
+    tagChipsHtml += `<button class="pono-tag-chip${ponoTagFilter==='all'?' active':''}" data-ptag="all">ALL</button>`;
+    for(const [key,label] of Object.entries(PONO_TAGS)){
+      tagChipsHtml += `<button class="pono-tag-chip${ponoTagFilter===key?' active':''}" data-ptag="${key}">${label}</button>`;
+    }
+    tagChipsHtml += '</div>';
+    let memosHtml = '';
+    if(filtered.length===0){
+      memosHtml = '<div class="empty-state"><div class="icon">&#128221;</div><p>メモを追加してみよう<br><small>右下の＋ボタンから追加</small></p></div>';
+    } else {
+      memosHtml = '<div class="pono-memo-list">';
+      memosHtml += filtered.map((memo,i) => {
+        const origIdx = notes.indexOf(memo);
+        const tagsHtml = (memo.tags||[]).map(t => `<span class="pono-memo-tag tag-${t}">${PONO_TAGS[t]||t}</span>`).join('');
+        const dateStr = new Date(memo.updatedAt||memo.createdAt).toLocaleDateString('ja-JP');
+        return `<div class="pono-memo-card" data-memo-idx="${origIdx}">
+          <div class="pono-memo-text">${escapeHtml(memo.text)}</div>
+          ${tagsHtml?'<div class="pono-memo-tags">'+tagsHtml+'</div>':''}
+          <div class="pono-memo-bottom">
+            <span>${dateStr}</span>
+            <div class="pono-memo-actions">
+              <button class="pono-memo-action-btn" data-memo-edit="${origIdx}" title="編集">&#9998;</button>
+              <button class="pono-memo-action-btn" data-memo-del="${origIdx}" title="削除">&#128465;</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+      memosHtml += '</div>';
+    }
+    ponoView.innerHTML = `
+      <div class="pono-memo-header">
+        <button class="pono-memo-back" id="ponoBackBtn">&#8592;</button>
+        <div class="pono-memo-title">${escapeHtml(projectTitle)}</div>
+      </div>
+      ${tagChipsHtml}
+      ${memosHtml}
+    `;
+  } else {
+    const sentIds = state.pono.sentIds;
+    if(sentIds.length===0){
+      ponoView.innerHTML = `
+        <div class="pono-project-list"></div>
+        <div class="empty-state">
+          <div style="font-size:3rem;opacity:0.5">&#127959;</div>
+          <p>アイデアの詳細画面から「仮組みへ」で追加</p>
+        </div>
+      `;
+      return;
+    }
+    const cardsHtml = sentIds.map((id,i) => {
+      const p = GAME_IDEAS_DATA.find(x=>x.id===id);
+      const title = p ? p.title : id;
+      const notes = state.pono.notes[id] || [];
+      const memoCount = notes.length;
+      const latestDate = notes.length > 0
+        ? new Date(Math.max(...notes.map(n=>new Date(n.updatedAt||n.createdAt).getTime()))).toLocaleDateString('ja-JP')
+        : '\u2014';
+      return `<div class="pono-project-card" data-pono-project="${id}" style="animation-delay:${i*0.04}s">
+        <div class="ppc-title">${escapeHtml(title)}</div>
+        <div class="ppc-meta">
+          <span class="ppc-memo-count">&#128221; ${memoCount}件のメモ</span>
+          <span>最終更新: ${latestDate}</span>
+        </div>
+      </div>`;
+    }).join('');
+    ponoView.innerHTML = `<div class="pono-project-list">${cardsHtml}</div>`;
+  }
+}
+
+// ===== Memo Edit Modal =====
+let memoEditMode = null; // 'add' | 'edit'
+let memoEditIdx = null;
+let memoEditTags = [];
+
+function openMemoModal(mode, idx){
+  memoEditMode = mode;
+  memoEditIdx = idx;
+  memoEditTags = [];
+  const modal = document.getElementById('memoEditModal');
+  const title = document.getElementById('memoModalTitle');
+  const textarea = document.getElementById('memoEditText');
+  title.textContent = mode==='add' ? 'メモを追加' : 'メモを編集';
+  if(mode==='edit'){
+    const activeId = state.pono.activeId;
+    const notes = state.pono.notes[activeId] || [];
+    const memo = notes[idx]; if(!memo) return;
+    textarea.value = memo.text;
+    memoEditTags = (memo.tags||[]).slice();
+  } else {
+    textarea.value = '';
+    memoEditTags = [];
+  }
+  document.querySelectorAll('.memo-tag-btn').forEach(b => {
+    b.classList.toggle('active', memoEditTags.includes(b.dataset.tag));
+  });
+  modal.classList.remove('hidden');
+  setTimeout(()=>textarea.focus(),100);
+}
+
+function closeMemoModal(){
+  document.getElementById('memoEditModal').classList.add('hidden');
+  memoEditMode = null;
+  memoEditIdx = null;
+  memoEditTags = [];
+}
+
 // ===== Event Listeners =====
 function init(){
   loadStorage();
+  checkForUpdates();
+
+  function autoSendGoToPono() {
+    let count = 0;
+    for (const [id, r] of Object.entries(state.reviews)) {
+      if (r.status === 'go' && !state.pono.sentIds.includes(id)) {
+        state.pono.sentIds.push(id);
+        count++;
+      }
+    }
+    if (count > 0) { savePono(); showToast(count + '件をGO→仮組みに追加'); }
+  }
+  autoSendGoToPono();
+
   renderTagFilter();
   renderCards();
   updateInboxBadge();
@@ -1066,7 +1510,7 @@ function init(){
   // Back button
   document.getElementById('backBtn').addEventListener('click', () => showView('list'));
 
-  // Detail like button
+  // Detail actions
   document.getElementById('detailActions').addEventListener('click', e => {
     const likeBtn = e.target.closest('.like-btn');
     if(likeBtn){
@@ -1084,6 +1528,26 @@ function init(){
       saveArchived();
       renderDetail(id);
       showToast(state.archivedItems[id] ? 'アーカイブしました' : 'アーカイブを解除しました');
+      return;
+    }
+    const passBtn = e.target.closest('.pass-btn');
+    if(passBtn){
+      const id = state.currentId;
+      if(state.passedItems[id]){delete state.passedItems[id]} else {state.passedItems[id]=true}
+      savePassedItems();
+      renderDetail(id);
+      showToast(state.passedItems[id] ? '見送りにしました' : '見送りを解除しました');
+      return;
+    }
+    const ponoBtn = e.target.closest('.pono-btn');
+    if(ponoBtn){
+      const id = state.currentId;
+      if(!state.pono.sentIds.includes(id)){
+        state.pono.sentIds.push(id);
+        if(!state.pono.notes[id]) state.pono.notes[id] = [];
+        savePono();
+      }
+      showToast('仮組みに追加しました');
     }
   });
 
@@ -1162,35 +1626,7 @@ function init(){
     loadReviewForCurrent();
   };
 
-  // ===== Ideas System =====
-  function renderIdeas(){
-    const list = state.ideas;
-    const container = document.getElementById('ideaList');
-    const empty = document.getElementById('ideaEmpty');
-    if(list.length === 0){
-      container.innerHTML = '';
-      empty.classList.remove('hidden');
-      return;
-    }
-    empty.classList.add('hidden');
-    container.innerHTML = list.map((idea,i) => `
-      <div class="idea-card${idea.done?' done':''}" data-idx="${i}">
-        <div class="idea-text">${escapeHtml(idea.text)}</div>
-        <div class="idea-meta">
-          <span>${new Date(idea.createdAt).toLocaleDateString('ja-JP')}</span>
-          <div class="idea-actions">
-            <button class="idea-action" data-idea-done="${i}" title="${idea.done?'戻す':'完了'}">${idea.done?'&#8634;':'&#10003;'}</button>
-            <button class="idea-action" data-idea-del="${i}" title="削除">&#128465;</button>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function escapeHtml(s){
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
+  // ===== Ideas events =====
   document.getElementById('ideaAddBtn').addEventListener('click', () => {
     const input = document.getElementById('ideaInput');
     const text = input.value.trim();
@@ -1269,257 +1705,239 @@ function init(){
     showToast('エクスポートしました');
   });
 
-  // Handle back with history (Android back button support)
-  window.addEventListener('popstate', (e) => {
-    if(state.view === 'detail'){
-      showView('list');
-    } else if(state.view === 'dashboard'){
-      showView('list');
-    }
-  });
-}
-
-  // ===== GitHub Sync =====
-  const SYNC_REPO = 'studiogosso/game-ideas-app';
-  const SYNC_FILE = 'user-data.json';
-  let syncToken = localStorage.getItem('gi_sync_token') || '';
-  let syncSha = localStorage.getItem('gi_sync_sha') || '';
-  let syncTimer = null;
-
-  function getSyncData(){
-    return {
-      version: 2,
-      syncedAt: new Date().toISOString(),
-      likes: state.likes,
-      memos: state.memos,
-      reviews: state.reviews,
-      readItems: state.readItems,
-      archivedItems: state.archivedItems,
-      ideas: state.ideas
-    };
-  }
-
-  function updateSyncUI(status, label){
-    const dot = document.getElementById('syncDot');
-    const lbl = document.getElementById('syncLabel');
-    dot.className = 'sync-dot ' + status;
-    lbl.textContent = label;
-  }
-
-  function initSyncUI(){
-    const setup = document.getElementById('syncSetup');
-    const input = document.getElementById('syncTokenInput');
-    const disconnectBtn = document.getElementById('syncDisconnectBtn');
-    if(syncToken){
-      input.value = '••••••••••';
-      disconnectBtn.classList.remove('hidden');
-      updateSyncUI('ok', '接続済み');
-    } else {
-      disconnectBtn.classList.add('hidden');
-      updateSyncUI('', '未設定');
-    }
-  }
-
-  async function syncToGitHub(){
-    if(!syncToken) return;
-    updateSyncUI('syncing', '同期中...');
-    try{
-      const data = getSyncData();
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
-      const body = { message: 'sync: ' + new Date().toISOString(), content: content };
-      if(syncSha) body.sha = syncSha;
-
-      const res = await fetch('https://api.github.com/repos/' + SYNC_REPO + '/contents/' + SYNC_FILE, {
-        method: 'PUT',
-        headers: {
-          'Authorization': 'Bearer ' + syncToken,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-      if(!res.ok){
-        const err = await res.json();
-        if(res.status === 409){
-          // SHA conflict — fetch latest and retry
-          await fetchSyncSha();
-          return syncToGitHub();
-        }
-        throw new Error(err.message || res.status);
-      }
-      const result = await res.json();
-      syncSha = result.content.sha;
-      localStorage.setItem('gi_sync_sha', syncSha);
-      updateSyncUI('ok', '同期済み ' + new Date().toLocaleTimeString());
-    }catch(e){
-      console.error('Sync error:', e);
-      updateSyncUI('error', '同期エラー: ' + e.message);
-    }
-  }
-
-  async function fetchSyncSha(){
-    try{
-      const res = await fetch('https://api.github.com/repos/' + SYNC_REPO + '/contents/' + SYNC_FILE, {
-        headers: { 'Authorization': 'Bearer ' + syncToken }
-      });
-      if(res.ok){
-        const data = await res.json();
-        syncSha = data.sha;
-        localStorage.setItem('gi_sync_sha', syncSha);
-      } else {
-        syncSha = '';
-        localStorage.removeItem('gi_sync_sha');
-      }
-    }catch(e){ syncSha = ''; }
-  }
-
-  function scheduleSyncDebounced(){
-    if(!syncToken) return;
-    clearTimeout(syncTimer);
-    syncTimer = setTimeout(syncToGitHub, 3000);
-  }
-
-  // Hook save functions to auto-sync
-  const origSaveLikes = saveLikes;
-  saveLikes = function(){ origSaveLikes(); scheduleSyncDebounced(); };
-  const origSaveMemos = saveMemos;
-  saveMemos = function(){ origSaveMemos(); scheduleSyncDebounced(); };
-  const origSaveReviews = saveReviews;
-  saveReviews = function(){ origSaveReviews(); scheduleSyncDebounced(); };
-  const origSaveRead = saveRead;
-  saveRead = function(){ origSaveRead(); scheduleSyncDebounced(); };
-  const origSaveArchived = saveArchived;
-  saveArchived = function(){ origSaveArchived(); scheduleSyncDebounced(); };
-  const origSaveIdeas = saveIdeas;
-  saveIdeas = function(){ origSaveIdeas(); scheduleSyncDebounced(); };
-
-  // Sync setup UI
-  document.getElementById('syncSaveBtn').addEventListener('click', async () => {
-    const input = document.getElementById('syncTokenInput');
-    const token = input.value.trim();
-    if(!token || token === '••••••••••') return;
-    syncToken = token;
-    localStorage.setItem('gi_sync_token', syncToken);
-    await fetchSyncSha();
-    await syncToGitHub();
-    initSyncUI();
-    showToast('GitHub同期を設定しました');
+  // ===== PONO events =====
+  // FAB - add memo
+  document.getElementById('ponoFab').addEventListener('click', () => {
+    if(!state.pono.activeId) return;
+    openMemoModal('add', null);
   });
 
-  document.getElementById('syncDisconnectBtn').addEventListener('click', () => {
-    syncToken = '';
-    syncSha = '';
-    localStorage.removeItem('gi_sync_token');
-    localStorage.removeItem('gi_sync_sha');
-    initSyncUI();
-    showToast('同期を解除しました');
-  });
-
-  initSyncUI();
-
-  // ===== PWA Install Prompt =====
-  let deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const banner = document.getElementById('installBanner');
-    if(!localStorage.getItem('gi_install_dismissed')){
-      banner.classList.remove('hidden');
+  // PONO view delegated events
+  document.getElementById('ponoView').addEventListener('click', e => {
+    const projectCard = e.target.closest('[data-pono-project]');
+    if(projectCard){
+      state.pono.activeId = projectCard.dataset.ponoProject;
+      ponoTagFilter = 'all';
+      savePono();
+      renderPonoView();
+      return;
+    }
+    const backBtn = e.target.closest('#ponoBackBtn');
+    if(backBtn){
+      state.pono.activeId = null;
+      ponoTagFilter = 'all';
+      savePono();
+      renderPonoView();
+      return;
+    }
+    const tagChip = e.target.closest('[data-ptag]');
+    if(tagChip){
+      ponoTagFilter = tagChip.dataset.ptag;
+      renderPonoView();
+      return;
+    }
+    const editBtn = e.target.closest('[data-memo-edit]');
+    if(editBtn){
+      openMemoModal('edit', parseInt(editBtn.dataset.memoEdit));
+      return;
+    }
+    const delBtn = e.target.closest('[data-memo-del]');
+    if(delBtn){
+      const idx = parseInt(delBtn.dataset.memoDel);
+      const activeId = state.pono.activeId;
+      if(!activeId) return;
+      const notes = state.pono.notes[activeId] || [];
+      notes.splice(idx,1);
+      savePono(); renderPonoView(); showToast('削除しました');
+      return;
     }
   });
 
-  document.getElementById('installBtn').addEventListener('click', async () => {
-    if(!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const result = await deferredPrompt.userChoice;
-    if(result.outcome === 'accepted'){
-      showToast('アプリをインストールしました！');
+  // Memo modal tag selector
+  document.getElementById('memoTagSelect').addEventListener('click', e => {
+    const btn = e.target.closest('.memo-tag-btn');
+    if(!btn) return;
+    const tag = btn.dataset.tag;
+    const idx = memoEditTags.indexOf(tag);
+    if(idx>=0){ memoEditTags.splice(idx,1); btn.classList.remove('active'); }
+    else{ memoEditTags.push(tag); btn.classList.add('active'); }
+  });
+
+  // Memo modal save
+  document.getElementById('memoEditSaveBtn').addEventListener('click', () => {
+    const text = document.getElementById('memoEditText').value.trim();
+    if(!text){ showToast('内容を入力してください'); return; }
+    const activeId = state.pono.activeId;
+    if(!activeId){ showToast('アイデアが選択されていません'); return; }
+    if(!state.pono.notes[activeId]) state.pono.notes[activeId] = [];
+    const notes = state.pono.notes[activeId];
+    if(memoEditMode==='add'){
+      notes.push({ id: Date.now().toString(), text, tags: memoEditTags.slice(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+      showToast('メモを追加しました');
+    } else if(memoEditMode==='edit' && memoEditIdx!==null){
+      notes[memoEditIdx].text = text;
+      notes[memoEditIdx].tags = memoEditTags.slice();
+      notes[memoEditIdx].updatedAt = new Date().toISOString();
+      showToast('メモを更新しました');
     }
-    deferredPrompt = null;
-    document.getElementById('installBanner').classList.add('hidden');
+    savePono(); closeMemoModal(); renderPonoView();
   });
 
-  document.getElementById('installClose').addEventListener('click', () => {
-    document.getElementById('installBanner').classList.add('hidden');
-    localStorage.setItem('gi_install_dismissed', '1');
+  document.getElementById('memoEditCancelBtn').addEventListener('click', closeMemoModal);
+  document.getElementById('memoEditModal').addEventListener('click', e => {
+    if(e.target.classList.contains('memo-edit-modal')) closeMemoModal();
   });
 
-  window.addEventListener('appinstalled', () => {
-    document.getElementById('installBanner').classList.add('hidden');
-    deferredPrompt = null;
+  // ===== Swipe navigation in detail view =====
+  let swipeStartX=0, swipeStartY=0;
+  const detailEl = document.getElementById('detailView');
+  detailEl.addEventListener('touchstart', e=>{
+    swipeStartX=e.touches[0].clientX;
+    swipeStartY=e.touches[0].clientY;
+  },{passive:true});
+  detailEl.addEventListener('touchend', e=>{
+    const dx=e.changedTouches[0].clientX-swipeStartX;
+    const dy=e.changedTouches[0].clientY-swipeStartY;
+    if(Math.abs(dx)<80||Math.abs(dy)>Math.abs(dx)*0.7) return;
+    const list=getFiltered();
+    const idx=list.findIndex(p=>p.id===state.currentId);
+    if(idx<0) return;
+    let nextIdx = dx<0 ? idx+1 : idx-1;
+    if(nextIdx<0) nextIdx=list.length-1;
+    if(nextIdx>=list.length) nextIdx=0;
+    renderDetail(list[nextIdx].id);
+    showToast((nextIdx+1)+'/'+list.length);
+    window.scrollTo(0,0);
+  },{passive:true});
+
+  // Popstate
+  window.addEventListener('popstate', () => {
+    if(state.view==='detail'||state.view==='dashboard') showView('list');
   });
 
   // ===== Backup / Restore =====
-  document.getElementById('openBackupBtn').addEventListener('click', () => {
-    document.getElementById('backupModal').classList.remove('hidden');
-  });
-
-  document.getElementById('backupCloseBtn').addEventListener('click', () => {
-    document.getElementById('backupModal').classList.add('hidden');
-  });
-
-  document.getElementById('backupModal').addEventListener('click', (e) => {
-    if(e.target.id === 'backupModal') e.target.classList.add('hidden');
-  });
-
+  document.getElementById('openBackupBtn').addEventListener('click', ()=>document.getElementById('backupModal').classList.remove('hidden'));
+  document.getElementById('backupCloseBtn').addEventListener('click', ()=>document.getElementById('backupModal').classList.add('hidden'));
+  document.getElementById('backupModal').addEventListener('click', e=>{if(e.target.id==='backupModal')e.target.classList.add('hidden')});
   document.getElementById('backupExportBtn').addEventListener('click', () => {
-    const backup = {
-      version: 2,
-      exportDate: new Date().toISOString(),
-      likes: state.likes,
-      memos: state.memos,
-      reviews: state.reviews,
-      readItems: state.readItems,
-      archivedItems: state.archivedItems,
-      ideas: state.ideas
-    };
-    const json = JSON.stringify(backup, null, 2);
-    const blob = new Blob([json], {type:'application/json'});
+    const backup = { version:5, exportDate:new Date().toISOString(), likes:state.likes, memos:state.memos, reviews:state.reviews, readItems:state.readItems, archivedItems:state.archivedItems, passedItems:state.passedItems, ideas:state.ideas, pono:state.pono, seenHashes:state.seenHashes, prevVersions:state.prevVersions };
+    const blob = new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'game-ideas-backup-' + new Date().toISOString().slice(0,10) + '.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('バックアップを書き出しました');
+    const a = document.createElement('a'); a.href=url; a.download='game-ideas-backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+    URL.revokeObjectURL(url); showToast('バックアップを書き出しました');
   });
-
-  document.getElementById('backupImportFile').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if(!file) return;
+  document.getElementById('backupImportFile').addEventListener('change', e => {
+    const file=e.target.files[0]; if(!file) return;
     const reader = new FileReader();
     reader.onload = function(ev){
       try{
         const data = JSON.parse(ev.target.result);
-        if(!data.version){
-          showToast('無効なバックアップファイルです');
-          return;
-        }
-        state.likes = data.likes || {};
-        state.memos = data.memos || {};
-        state.reviews = data.reviews || {};
-        state.readItems = data.readItems || {};
-        state.archivedItems = data.archivedItems || {};
-        state.ideas = data.ideas || [];
-        saveLikes(); saveMemos(); saveReviews(); saveRead(); saveArchived(); saveIdeas();
+        if(!data.version){ showToast('無効なバックアップファイルです'); return; }
+        state.likes=data.likes||{}; state.memos=data.memos||{}; state.reviews=data.reviews||{};
+        state.readItems=data.readItems||{}; state.archivedItems=data.archivedItems||{};
+        state.passedItems=data.passedItems||{};
+        state.ideas=data.ideas||[];
+        if(data.pono) state.pono=Object.assign(state.pono,data.pono);
+        if(data.seenHashes) state.seenHashes=data.seenHashes;
+        if(data.prevVersions) state.prevVersions=data.prevVersions;
+        saveLikes();saveMemos();saveReviews();saveRead();saveArchived();savePassedItems();saveIdeas();savePono();saveSeenHashes();savePrevVersions();
         renderCards();
         document.getElementById('backupModal').classList.add('hidden');
         showToast('バックアップを復元しました！');
-      }catch(err){
-        showToast('ファイルの読み込みに失敗しました');
-      }
+      }catch(err){ showToast('ファイルの読み込みに失敗しました'); }
     };
-    reader.readAsText(file);
-    e.target.value = '';
+    reader.readAsText(file); e.target.value='';
   });
+
+  // ===== GitHub Sync =====
+  const SYNC_REPO = 'studiogosso/game-ideas-app';
+  const SYNC_FILE = 'user-data.json';
+  let syncToken = localStorage.getItem('gi_sync_token')||'';
+  let syncSha = localStorage.getItem('gi_sync_sha')||'';
+  let syncTimer = null;
+
+  function getSyncData(){
+    return { version:5, syncedAt:new Date().toISOString(), likes:state.likes, memos:state.memos, reviews:state.reviews, readItems:state.readItems, archivedItems:state.archivedItems, passedItems:state.passedItems, ideas:state.ideas, pono:state.pono, seenHashes:state.seenHashes, prevVersions:state.prevVersions };
+  }
+  function updateSyncUI(status,label){
+    document.getElementById('syncDot').className='sync-dot '+status;
+    document.getElementById('syncLabel').textContent=label;
+  }
+  function initSyncUI(){
+    const input=document.getElementById('syncTokenInput');
+    const disconn=document.getElementById('syncDisconnectBtn');
+    if(syncToken){ input.value='••••••••••'; disconn.classList.remove('hidden'); updateSyncUI('ok','接続済み'); }
+    else{ disconn.classList.add('hidden'); updateSyncUI('','未設定'); }
+  }
+  async function syncToGitHub(){
+    if(!syncToken) return;
+    updateSyncUI('syncing','同期中...');
+    try{
+      const content=btoa(unescape(encodeURIComponent(JSON.stringify(getSyncData(),null,2))));
+      const body={message:'sync: '+new Date().toISOString(),content};
+      if(syncSha) body.sha=syncSha;
+      const res=await fetch('https://api.github.com/repos/'+SYNC_REPO+'/contents/'+SYNC_FILE,{method:'PUT',headers:{'Authorization':'Bearer '+syncToken,'Content-Type':'application/json'},body:JSON.stringify(body)});
+      if(!res.ok){ const err=await res.json(); if(res.status===409){await fetchSyncSha();return syncToGitHub();} throw new Error(err.message||res.status); }
+      const result=await res.json(); syncSha=result.content.sha; localStorage.setItem('gi_sync_sha',syncSha);
+      updateSyncUI('ok','同期済み '+new Date().toLocaleTimeString());
+    }catch(e){ console.error('Sync error:',e); updateSyncUI('error','同期エラー: '+e.message); }
+  }
+  async function fetchSyncSha(){
+    try{
+      const res=await fetch('https://api.github.com/repos/'+SYNC_REPO+'/contents/'+SYNC_FILE,{headers:{'Authorization':'Bearer '+syncToken}});
+      if(res.ok){ const data=await res.json(); syncSha=data.sha; localStorage.setItem('gi_sync_sha',syncSha); }
+      else{ syncSha=''; localStorage.removeItem('gi_sync_sha'); }
+    }catch(e){ syncSha=''; }
+  }
+  function scheduleSyncDebounced(){ if(!syncToken) return; clearTimeout(syncTimer); syncTimer=setTimeout(syncToGitHub,3000); }
+  const origSaveLikes=saveLikes; saveLikes=function(){origSaveLikes();scheduleSyncDebounced()};
+  const origSaveMemos=saveMemos; saveMemos=function(){origSaveMemos();scheduleSyncDebounced()};
+  const origSaveReviews=saveReviews; saveReviews=function(){origSaveReviews();scheduleSyncDebounced()};
+  const origSaveRead=saveRead; saveRead=function(){origSaveRead();scheduleSyncDebounced()};
+  const origSaveArchived=saveArchived; saveArchived=function(){origSaveArchived();scheduleSyncDebounced()};
+  const origSavePassedItems=savePassedItems; savePassedItems=function(){origSavePassedItems();scheduleSyncDebounced()};
+  const origSaveIdeas=saveIdeas; saveIdeas=function(){origSaveIdeas();scheduleSyncDebounced()};
+  const origSavePono=savePono; savePono=function(){origSavePono();scheduleSyncDebounced()};
+  const origSaveSeenHashes=saveSeenHashes; saveSeenHashes=function(){origSaveSeenHashes();scheduleSyncDebounced()};
+  const origSavePrevVersions=savePrevVersions; savePrevVersions=function(){origSavePrevVersions();scheduleSyncDebounced()};
+
+  document.getElementById('syncSaveBtn').addEventListener('click', async()=>{
+    const input=document.getElementById('syncTokenInput'); const token=input.value.trim();
+    if(!token||token==='••••••••••') return;
+    syncToken=token; localStorage.setItem('gi_sync_token',syncToken);
+    await fetchSyncSha(); await syncToGitHub(); initSyncUI(); showToast('GitHub同期を設定しました');
+  });
+  document.getElementById('syncDisconnectBtn').addEventListener('click',()=>{
+    syncToken=''; syncSha=''; localStorage.removeItem('gi_sync_token'); localStorage.removeItem('gi_sync_sha');
+    initSyncUI(); showToast('同期を解除しました');
+  });
+  initSyncUI();
+
+  // ===== PWA Install =====
+  let deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt',e=>{
+    e.preventDefault(); deferredPrompt=e;
+    if(!localStorage.getItem('gi_install_dismissed')) document.getElementById('installBanner').classList.remove('hidden');
+  });
+  document.getElementById('installBtn').addEventListener('click',async()=>{
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt(); const result=await deferredPrompt.userChoice;
+    if(result.outcome==='accepted') showToast('アプリをインストールしました！');
+    deferredPrompt=null; document.getElementById('installBanner').classList.add('hidden');
+  });
+  document.getElementById('installClose').addEventListener('click',()=>{
+    document.getElementById('installBanner').classList.add('hidden');
+    localStorage.setItem('gi_install_dismissed','1');
+  });
+  window.addEventListener('appinstalled',()=>{ document.getElementById('installBanner').classList.add('hidden'); deferredPrompt=null; });
+}
 
 document.addEventListener('DOMContentLoaded', init);
 })();
 </script>
 <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(function(e) {
-    console.log('SW registration failed:', e);
-  });
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(e=>console.log('SW failed:',e));
 }
 </script>
 </body>
