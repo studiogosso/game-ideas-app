@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Game Ideas Reviewer (Mobile)</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a16;--bg2:#12122a;--bg3:#1a1a3e;--bg4:#252560;
+  --text:#e0e0f0;--text2:#9898c0;--text3:#6060a0;
+  --accent:#6c5ce7;--accent2:#a855f7;--accent3:#5b5bd6;
+  --neon:#00f0ff;--neon2:#7c5cfc;--pink:#e84393;
+  --green:#00cec9;--yellow:#fdcb6e;--red:#ff7675;--cyan:#00f0ff;
+  --card-radius:14px;--transition:0.25s ease;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html{font-size:15px;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;
+  overflow-x:hidden;padding-bottom:calc(64px + var(--safe-bottom));
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;border:none;background:none;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,textarea{font:inherit;border:none;background:none;color:inherit;outline:none}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
+.header{position:sticky;top:0;z-index:100;background:rgba(10,10,22,0.92);backdrop-filter:blur(12px);padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(108,92,231,0.2)}
+.header-title{font-size:1.15rem;font-weight:700;background:linear-gradient(135deg,var(--neon),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.header-back{width:36px;height:36px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;transition:var(--transition)}
+.header-back:active{transform:scale(0.9)}
+.header-right{margin-left:auto;display:flex;gap:8px}
+.search-wrap{margin:12px 16px;position:relative}
+.search-wrap input{width:100%;padding:12px 16px 12px 42px;background:var(--bg2);border:1px solid var(--bg4);border-radius:12px;font-size:0.95rem;color:var(--text);transition:var(--transition)}
+.search-wrap input:focus{border-color:var(--neon);box-shadow:0 0 0 3px rgba(0,240,255,0.1)}
+.search-wrap .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:1rem;pointer-events:none}
+.filter-bar{padding:0 16px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;margin-bottom:8px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-chip{flex-shrink:0;padding:7px 14px;border-radius:20px;font-size:0.8rem;font-weight:600;background:var(--bg3);color:var(--text2);transition:var(--transition);border:1px solid transparent;white-space:nowrap}
+.filter-chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.filter-chip:active{transform:scale(0.95)}
+.control-bar{padding:8px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.control-bar .count{font-size:0.8rem;color:var(--text3);margin-right:auto}
+.ctrl-btn{padding:6px 12px;border-radius:8px;font-size:0.75rem;font-weight:600;background:var(--bg3);color:var(--text2);transition:var(--transition)}
+.ctrl-btn.active{background:var(--accent3);color:#fff}
+.ctrl-btn:active{transform:scale(0.95)}
+.and-or-toggle{padding:4px;border-radius:8px;background:var(--bg3);display:flex}
+.and-or-toggle button{padding:5px 10px;border-radius:6px;font-size:0.7rem;font-weight:700;transition:var(--transition);color:var(--text3)}
+.and-or-toggle button.active{background:var(--accent);color:#fff}
+.tag-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:10px;font-size:0.7rem;font-weight:600;white-space:nowrap;transition:var(--transition);cursor:pointer;border:1px solid transparent}
+.tag-badge:active{transform:scale(0.93)}
+.tag-badge.selected{border-color:#fff;box-shadow:0 0 8px rgba(255,255,255,0.2)}
+.stars{font-size:0.75rem;letter-spacing:1px;white-space:nowrap}
+.stars .on{color:var(--yellow)}
+.stars .off{color:var(--bg4)}
+.card-list{padding:8px 16px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--bg2);border-radius:var(--card-radius);padding:16px;border:1px solid var(--bg4);transition:var(--transition);position:relative;overflow:hidden;animation:cardIn 0.3s ease both}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--neon),var(--accent2));opacity:0;transition:var(--transition)}
+.card:active{transform:scale(0.985)}
+.card:active::before{opacity:1}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.card-title{font-size:1.05rem;font-weight:700;flex:1;line-height:1.3}
+.card-cat{flex-shrink:0;padding:3px 8px;border-radius:6px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.card-cat.mechanics{background:rgba(0,240,255,0.15);color:var(--neon)}
+.card-cat.visual{background:rgba(168,85,247,0.15);color:var(--accent2)}
+.card-cat.mashup{background:rgba(232,67,147,0.15);color:var(--pink)}
+.card-cat.market{background:rgba(0,206,201,0.15);color:var(--green)}
+.card-cat.boardgame{background:rgba(253,203,110,0.15);color:var(--yellow)}
+.card-summary{font-size:0.82rem;color:var(--text2);line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{display:flex;align-items:center;gap:12px;margin-bottom:8px;font-size:0.75rem;color:var(--text3)}
+.card-footer{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.card-heart{position:absolute;top:14px;right:14px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:rgba(0,0,0,0.3);font-size:1.1rem;transition:var(--transition);z-index:2}
+.card-heart.liked{color:var(--pink);animation:heartPop 0.35s ease}
+.card-heart:active{transform:scale(0.85)}
+@keyframes heartPop{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+.card-memo-indicator{position:absolute;bottom:14px;right:14px;font-size:0.7rem;color:var(--yellow);display:flex;align-items:center;gap:3px}
+.detail-page{display:none;padding:0 0 32px}
+.detail-page.visible{display:block}
+.detail-hero{padding:20px 16px;background:linear-gradient(180deg,var(--bg3) 0%,var(--bg) 100%)}
+.detail-hero .title{font-size:1.4rem;font-weight:800;margin-bottom:6px}
+.detail-hero .meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.detail-hero .tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+.highlight-box{background:var(--bg2);border-radius:12px;padding:14px;margin-bottom:10px;border-left:3px solid var(--neon)}
+.highlight-box.hook{border-left-color:var(--pink)}
+.highlight-box .label{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--neon);margin-bottom:4px}
+.highlight-box.hook .label{color:var(--pink)}
+.highlight-box p{font-size:0.88rem;line-height:1.6;color:var(--text)}
+.detail-stars{display:flex;gap:16px;margin-bottom:14px}
+.detail-stars .star-group{display:flex;align-items:center;gap:4px;font-size:0.82rem}
+.detail-stars .star-label{color:var(--text3);font-size:0.75rem}
+.detail-actions{display:flex;gap:10px;padding:12px 16px}
+.detail-action-btn{flex:1;padding:12px;border-radius:12px;font-size:0.85rem;font-weight:700;text-align:center;transition:var(--transition)}
+.detail-action-btn.like-btn{background:var(--bg3);color:var(--text2)}
+.detail-action-btn.like-btn.liked{background:rgba(232,67,147,0.15);color:var(--pink)}
+.detail-action-btn:active{transform:scale(0.96)}
+.memo-section{margin:0 16px 16px;padding:14px;background:var(--bg2);border-radius:12px;border:1px solid var(--bg4)}
+.memo-section .memo-label{font-size:0.8rem;font-weight:700;color:var(--yellow);margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.memo-section textarea{width:100%;min-height:80px;padding:10px;background:var(--bg);border:1px solid var(--bg4);border-radius:8px;resize:vertical;font-size:0.85rem;line-height:1.5;color:var(--text);transition:var(--transition)}
+.memo-section textarea:focus{border-color:var(--neon)}
+.memo-section .memo-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.memo-save-btn{padding:8px 18px;border-radius:8px;font-size:0.8rem;font-weight:700;background:var(--accent);color:#fff;transition:var(--transition)}
+.memo-save-btn:active{transform:scale(0.95)}
+.md-content{padding:16px;line-height:1.7;font-size:0.9rem}
+.md-content h1{font-size:1.4rem;font-weight:800;margin:20px 0 10px;background:linear-gradient(135deg,var(--neon),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.md-content h2{font-size:1.15rem;font-weight:700;margin:18px 0 8px;color:var(--neon);padding-bottom:4px;border-bottom:1px solid var(--bg4)}
+.md-content h3{font-size:1rem;font-weight:700;margin:14px 0 6px;color:var(--text)}
+.md-content p{margin:8px 0;color:var(--text2)}
+.md-content ul,.md-content ol{margin:8px 0 8px 20px;color:var(--text2)}
+.md-content li{margin:4px 0}
+.md-content strong{color:var(--text);font-weight:700}
+.md-content table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.82rem}
+.md-content th{background:var(--bg3);padding:8px 10px;text-align:left;font-weight:700;border:1px solid var(--bg4)}
+.md-content td{padding:8px 10px;border:1px solid var(--bg4);color:var(--text2)}
+.md-content tr:nth-child(even) td{background:rgba(26,26,62,0.4)}
+.dashboard{display:none;padding:16px}
+.dashboard.visible{display:block}
+.dash-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.dash-card{background:var(--bg2);border-radius:12px;padding:16px 12px;text-align:center;border:1px solid var(--bg4)}
+.dash-card .num{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,var(--neon),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.dash-card .lbl{font-size:0.7rem;color:var(--text3);margin-top:2px}
+.dash-section{margin-bottom:20px}
+.dash-section h3{font-size:0.9rem;font-weight:700;color:var(--text2);margin-bottom:10px}
+.dash-tag-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bg4)}
+.dash-tag-row .tag-name{flex:1;font-size:0.85rem}
+.dash-tag-row .tag-count{font-size:0.85rem;font-weight:700;color:var(--neon)}
+.dash-tag-bar{flex:2;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.dash-tag-bar-fill{height:100%;border-radius:3px;transition:width 0.5s ease}
+.export-btn{width:100%;padding:14px;border-radius:12px;font-size:0.9rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--neon));color:#fff;transition:var(--transition);margin-top:8px}
+.export-btn:active{transform:scale(0.97)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(10,10,22,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(108,92,231,0.2);display:flex;padding:6px 0 calc(6px + var(--safe-bottom))}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;font-size:0.65rem;color:var(--text3);transition:var(--transition)}
+.nav-item .nav-icon{font-size:1.3rem;transition:var(--transition)}
+.nav-item.active{color:var(--neon)}
+.nav-item.active .nav-icon{transform:scale(1.1)}
+.nav-item:active{transform:scale(0.9)}
+.empty-state{text-align:center;padding:48px 24px;color:var(--text3)}
+.empty-state .icon{font-size:3rem;margin-bottom:12px;opacity:0.5}
+.empty-state p{font-size:0.9rem}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);color:var(--text);padding:10px 20px;border-radius:10px;font-size:0.82rem;font-weight:600;opacity:0;transition:all 0.3s ease;pointer-events:none;z-index:200;border:1px solid var(--bg4);white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="header" id="header">
+    <button class="header-back hidden" id="backBtn" aria-label="戻る">&#8592;</button>
+    <div class="header-title" id="headerTitle">Game Ideas Reviewer</div>
+    <div class="header-right" id="headerRight"></div>
+  </header>
+  <div id="listView">
+    <div class="search-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="企画を検索...">
+    </div>
+    <div class="filter-bar" id="catFilter">
+      <button class="filter-chip active" data-cat="all">すべて</button>
+      <button class="filter-chip" data-cat="mechanics">メカニクス</button>
+      <button class="filter-chip" data-cat="visual">ビジュアル</button>
+      <button class="filter-chip" data-cat="mashup">マッシュアップ</button>
+      <button class="filter-chip" data-cat="market">マーケット</button>
+      <button class="filter-chip" data-cat="boardgame">ボドゲ</button>
+      <button class="filter-chip" data-cat="liked">&#10084; ライク済</button>
+      <button class="filter-chip" data-cat="memo">&#9997; メモ付</button>
+    </div>
+    <div class="filter-bar" id="tagFilter"></div>
+    <div class="control-bar">
+      <span class="count" id="resultCount"></span>
+      <div class="and-or-toggle" id="andOrToggle">
+        <button class="active" data-mode="or">OR</button>
+        <button data-mode="and">AND</button>
+      </div>
+      <button class="ctrl-btn" id="sortBtn" data-sort="commercial">商業性順</button>
+    </div>
+    <div class="card-list" id="cardList"></div>
+    <div class="empty-state hidden" id="emptyState">
+      <div class="icon">&#128270;</div>
+      <p>条件に一致する企画がありません</p>
+    </div>
+  </div>
+  <div class="detail-page" id="detailView">
+    <div class="detail-hero" id="detailHero"></div>
+    <div class="detail-actions" id="detailActions"></div>
+    <div class="memo-section" id="memoSection">
+      <div class="memo-label">&#128221; メモ</div>
+      <textarea id="memoText" placeholder="この企画についてメモを残す..."></textarea>
+      <div class="memo-actions">
+        <button class="memo-save-btn" id="memoSaveBtn">保存</button>
+      </div>
+    </div>
+    <div class="md-content" id="mdContent"></div>
+  </div>
+  <div class="dashboard" id="dashboardView">
+    <div class="dash-grid" id="dashGrid"></div>
+    <div class="dash-section" id="dashCats"><h3>カテゴリ別企画数</h3><div id="dashCatList"></div></div>
+    <div class="dash-section" id="dashTags"><h3>タグ別企画数</h3><div id="dashTagList"></div></div>
+    <div class="dash-section"><h3>エクスポート</h3><button class="export-btn" id="exportBtn">&#128230; ライク済みをJSON出力</button></div>
+  </div>
+</div>
+<nav class="bottom-nav" id="bottomNav">
+  <button class="nav-item active" data-view="list"><span class="nav-icon">&#127918;</span><span>一覧</span></button>
+  <button class="nav-item" data-view="dashboard"><span class="nav-icon">&#128202;</span><span>ダッシュボード</span></button>
+</nav>
+<div class="toast" id="toast"></div>
+<script>
+// === EMBEDDED DATA ===
+const GAME_IDEAS_DATA=[{id:"M01_01",title:"リワインド・ロット（Rewind Rot）",type:"seed",category:"mechanics",summary:"時間を巻き戻すたびに世界が不可逆的に劣化するパズルアドベンチャー。テクスチャが崩れ、足場が腐り、NPCの記憶が欠落する。巻き戻しは無限だが、使うほど世界が壊れるため最小回数攻略が真のゴール。",hook:"何度でもやり直せる。ただし、やり直すたびに世界が朽ちていく。最も美しい世界を残せるのは、最も少ない後悔で進んだ者だけだ。",commercial:4,streaming:4,tags:["パズル","ナラティブ","タイムループ"],content:"## リワインド・ロット\n\n**ジャンル:** パズルアドベンチャー\n**コアメカニクス:** 時間巻き戻しで世界が劣化\n**参考:** Braid, Outer Wilds\n**商業性:** 4/5"},{id:"M01_02",title:"トングス・オブ・デシート（Tongues of Deceit）",type:"seed",category:"mechanics",summary:"会話で「嘘の選択肢」を選ぶとステータスが上がるが信頼値が低下する会話型RPG。嘘を重ねると短期的に有利だが、終盤で致命的な代償を払う。",hook:"嘘をつけば強くなれる。でも誰もあなたを信じなくなる。最後に残るのは力か、信頼か。",commercial:3,streaming:3,tags:["ナラティブ","ストラテジー"],content:"## トングス・オブ・デシート\n\n**ジャンル:** 会話型RPG\n**参考:** Disco Elysium, Undertale\n**商業性:** 3/5"},{id:"M01_03",title:"ブラインド・エコー（Blind Echo）",type:"seed",category:"mechanics",summary:"画面は完全な暗闇。足音、環境音、敵の息遣い、エコーだけを頼りに移動・隠れるオーディオステルスゲーム。",hook:"目を閉じろ。耳だけが武器だ。音を出せば敵が来る。でも音を出さなければ、何も見えない。",commercial:2,streaming:3,tags:["ホラー","ステルス"],content:"## ブラインド・エコー\n\n**ジャンル:** オーディオステルス\n**商業性:** 2/5 — ニッチだがアワード向き"},{id:"M01_04",title:"コープス・クライム（Corpse Climb）",type:"seed",category:"mechanics",summary:"死ぬと死体がその場に残り、次の自分の足場・盾・重しとして利用できる死にゲープラットフォーマー。死ぬことが「リソース生成」になる逆転の発想。",hook:"死ぬたびに、あなたの死体が道になる。何百回死んで積み上げた自分を踏み台に、頂上を目指せ。",commercial:4,streaming:5,tags:["アクション","プラットフォーマー"],content:"## コープス・クライム\n\n**ジャンル:** 死にゲープラットフォーマー\n**商業性:** 4/5 — 配信映え抜群"},{id:"M01_05",title:"ヴァニシング・パワー（Vanishing Power）",type:"seed",category:"mechanics",summary:"敵を倒すと自分のHP・攻撃力・速度が減少する逆成長アクション。「どの敵を倒し、どの敵を避けるか」の戦略性が鍵。",hook:"敵を倒すほど弱くなる。全部倒したら最弱の勇者。最強でボスに挑むには――逃げ続けるしかない。",commercial:3,streaming:3,tags:["アクション","ストラテジー"],content:"## ヴァニシング・パワー\n\n**ジャンル:** 逆成長アクション\n**商業性:** 3/5"},{id:"M01_06",title:"パルス・ワールド（Pulse World）",type:"seed",category:"mechanics",summary:"マップ全体が一定周期で「呼吸」するサバイバルアクション。膨張で安全地帯が増え、収縮で地形が圧縮されて危険になる。",hook:"この世界は生きている。息を吸えば大地が広がり、吐けば全てが潰れる。",commercial:3,streaming:4,tags:["サバイバル","アクション"],content:"## パルス・ワールド\n\n**ジャンル:** サバイバルアクション\n**商業性:** 3/5"},{id:"M01_07",title:"メモリー・マーケット（Memory Market）",type:"seed",category:"mechanics",summary:"自分の記憶を通貨として売買できるナラティブADV。大切な思い出ほど高く売れるが、売った記憶に関連するストーリー分岐は永久に消失する。",hook:"あなたの記憶には値段がつく。大切な思い出ほど高く売れる。全てを手放した先に残るのは、誰だ？",commercial:4,streaming:3,tags:["ナラティブ","パズル"],content:"## メモリー・マーケット\n\n**ジャンル:** ナラティブADV\n**商業性:** 4/5"},{id:"M01_08",title:"エモーショナル・グラビティ（Emotional Gravity）",type:"seed",category:"mechanics",summary:"重力の方向がプレイヤーキャラの「感情値」で変わる感情駆動アクション。怒りで浮き、悲しみで沈み、恐怖で横に引かれる。",hook:"怒れば空に浮き、悲しめば地に沈む。感情をコントロールできなければ、この世界は渡れない。",commercial:3,streaming:3,tags:["アクション","パズル","ナラティブ"],content:"## エモーショナル・グラビティ\n\n**ジャンル:** 感情駆動アクション\n**商業性:** 3/5"},{id:"M01_09",title:"ワン・フォー・オール（One For All）",type:"seed",category:"mechanics",summary:"全プレイヤーが同じ1体のキャラクターを時間帯交代制で非同期操作する実験的MMO。",hook:"世界にたった1人の勇者。でもその勇者を動かすのは、何万人ものプレイヤーだ。",commercial:4,streaming:5,tags:["協力","ソーシャル"],content:"## ワン・フォー・オール\n\n**ジャンル:** 非同期共有キャラMMO\n**商業性:** 4/5"},{id:"M01_10",title:"デッキ・ディケイ（Deck Decay）",type:"seed",category:"mechanics",summary:"カードに「耐久値」があり使うたびに物理的に劣化するローグライクデッキビルダー。強力なカードほど劣化が早く、完全劣化で予測不能な残骸カードに変化。",hook:"最強のカードも、使えば朽ちる。ボロボロになったデッキで最終戦に挑むとき、頼れるのは運と残骸だけだ。",commercial:5,streaming:5,tags:["ローグライク","デッキビルド","カードゲーム"],content:"## デッキ・ディケイ\n\n**ジャンル:** ローグライクデッキビルダー\n**商業性:** 5/5 — 最も商業的に手堅い"},{id:"M02_01",title:"嘘つき商館（Liar's Bazaar）",type:"seed",category:"boardgame",summary:"闇市場の商人として偽物を混ぜて売りつけるブラフ系カードゲーム。二重封印システムで部分開封の騙し合いが熱い。",hook:"本物を売れば信用が上がるが、偽物を混ぜれば大儲け。告発されなければ――の話だが。",commercial:4,streaming:5,tags:["カードゲーム","対戦","ボドゲ"],content:"## 嘘つき商館\n\n**ジャンル:** ブラフ系カードゲーム\n**配信映え:** 5/5"},{id:"M02_02",title:"魔厨師録（Grimoire Kitchen）",type:"seed",category:"boardgame",summary:"食材カードと調理法カードでデッキを構築し料理を完成させるデッキビルドゲーム。カードのプレイ順序がレシピとなる。",hook:"食材の順番が運命を分ける。焼いてから煮るか、煮てから焼くかで傑作にも闇鍋にもなる。",commercial:4,streaming:3,tags:["デッキビルド","カードゲーム","ボドゲ"],content:"## 魔厨師録\n\n**ジャンル:** デッキビルド × 料理\n**商業性:** 4/5"},{id:"M02_03",title:"60秒王国（One Minute Kingdom）",type:"seed",category:"boardgame",summary:"毎ターンリアルタイム60秒以内にワーカーを配置するパニック型ワーカープレイスメント。",hook:"60秒で王国の運命を決めろ。時間切れが最大の敵。",commercial:3,streaming:4,tags:["ストラテジー","対戦","ボドゲ"],content:"## 60秒王国\n\n**ジャンル:** ワカプレ × リアルタイム\n**商業性:** 3/5"},{id:"M02_04",title:"賽の迷宮（Dice Labyrinth）",type:"seed",category:"boardgame",summary:"ダイスの6面をカスタマイズして自動生成ダンジョンを攻略するローグライク。ダイスの面＝ビルドそのもの。",hook:"ダイスの面を自由に書き換えろ。全面攻撃か、バランスか。振るたびに運命が回る。",commercial:5,streaming:4,tags:["ローグライク","ボドゲ"],content:"## 賽の迷宮\n\n**ジャンル:** ダイス × ローグライク\n**商業性:** 5/5"},{id:"M02_05",title:"裏切りの地下迷宮（Dungeon Impostors）",type:"seed",category:"boardgame",summary:"4〜8人でダンジョン探索するが1〜2人は魔王側のスパイ。Among Us×ダンジョン。",hook:"全員で協力してダンジョンを攻略――でも、この中に裏切り者がいる。",commercial:4,streaming:5,tags:["対戦","協力","ボドゲ"],content:"## 裏切りの地下迷宮\n\n**ジャンル:** 正体隠匿 × ダンジョン\n**配信映え:** 5/5"},{id:"M02_06",title:"闘技場の値札（Bidding Arena）",type:"seed",category:"boardgame",summary:"モンスターや傭兵を競りで獲得しチーム編成してバトル。通貨は「命の欠片」。",hook:"競りで使う通貨は命そのもの。入札額が同じなら共倒れ。",commercial:3,streaming:4,tags:["対戦","ストラテジー","ボドゲ"],content:"## 闘技場の値札\n\n**ジャンル:** オークション × バトル\n**商業性:** 3/5"},{id:"M02_07",title:"城壁パズル（Fortress Tiles）",type:"seed",category:"boardgame",summary:"テトリス的なポリオミノタイルで城壁を配置してタワーディフェンス。パズル力＝防衛力。",hook:"タイルをぴったり嵌めろ。隙間は敵の通り道になる。",commercial:4,streaming:3,tags:["パズル","ストラテジー","ボドゲ"],content:"## 城壁パズル\n\n**ジャンル:** タイル配置 × TD\n**商業性:** 4/5"},{id:"M02_08",title:"沈む船（Sinking Ark）",type:"seed",category:"boardgame",summary:"沈みゆく方舟から全員で脱出する協力ゲーム――だが救命ボートの定員は足りない。",hook:"協力すればするほど、裏切りの見返りが大きくなる。",commercial:3,streaming:5,tags:["協力","対戦","ボドゲ"],content:"## 沈む船\n\n**ジャンル:** 協力 × 裏切り\n**配信映え:** 5/5"},{id:"M02_09",title:"千夜書庫（Library of Thousand Nights）",type:"seed",category:"boardgame",summary:"プレイごとに新しいルールが永続追加されるレガシー系カードゲーム。50プレイ後には全く違うゲームに。",hook:"プレイするたびにルールが増える。50回後、世界に1つだけのゲームに。",commercial:4,streaming:4,tags:["カードゲーム","ボドゲ"],content:"## 千夜書庫\n\n**ジャンル:** レガシー系\n**商業性:** 4/5"},{id:"M02_10",title:"竜商路（Dragon Trade Route）",type:"seed",category:"boardgame",summary:"ファンタジー世界で魔法素材を売買する交渉ゲーム。契約を破ると呪いを受けるが呪いにもメリットあり。",hook:"契約を守るか破るか。呪いにもメリットがある世界。",commercial:3,streaming:4,tags:["ストラテジー","対戦","ボドゲ"],content:"## 竜商路\n\n**ジャンル:** 交渉 × ファンタジー\n**商業性:** 3/5"},{id:"M02_11",title:"数式決闘（Equation Duel）",type:"seed",category:"boardgame",summary:"互いに秘密の数式を持ち、入力値を渡して出力値から推理する2人対戦論理パズル。",hook:"数字を投げ、答えを受け取り、相手の頭の中を解読する知的決闘。",commercial:2,streaming:2,tags:["パズル","対戦","ボドゲ"],content:"## 数式決闘\n\n**ジャンル:** 推理パズル × 対戦\n**商業性:** 2/5"},{id:"M02_12",title:"百鬼領域（Hyakki Dominion）",type:"seed",category:"boardgame",summary:"日本の妖怪テーマのエリアコントロール。隣接妖怪の怪異コンボで領域を奪い合う。",hook:"雪女とかまいたちが隣接すれば吹雪が発動。",commercial:4,streaming:4,tags:["カードゲーム","ストラテジー","対戦","ボドゲ"],content:"## 百鬼領域\n\n**ジャンル:** エリアコントロール × カード\n**商業性:** 4/5"},{id:"M02_13",title:"絡繰闘技（Karakuri Bout）",type:"seed",category:"boardgame",summary:"からくり人形の行動を5つ事前プログラムして同時公開する対戦ゲーム。",hook:"5手先を読んでプログラムせよ。条件分岐カードが運命に柔軟性を与える。",commercial:3,streaming:4,tags:["対戦","ストラテジー","ボドゲ"],content:"## 絡繰闘技\n\n**ジャンル:** プログラミング × 対戦\n**商業性:** 3/5"},{id:"M02_14",title:"焚き火語り（Bonfire Tales）",type:"seed",category:"boardgame",summary:"旅の一座が焚き火を囲んで物語を語るリソース管理ゲーム。「良い物語」と「生き残り」が常に矛盾する。",hook:"感動的な展開を選べば名声は上がるが食料が消える。物語の代償を払え。",commercial:3,streaming:3,tags:["ナラティブ","ストラテジー","協力","ボドゲ"],content:"## 焚き火語り\n\n**ジャンル:** リソース管理 × 物語\n**商業性:** 3/5"},{id:"M02_15",title:"異能盤戯（Gifted Grid）",type:"seed",category:"boardgame",summary:"チェスベースだが全ての駒が異能を持つアブストラクト対戦。異能のクールダウン管理が勝負の鍵。",hook:"壁を貫通する駒、位置を入れ替える駒。異能を決定的瞬間に発動せよ。",commercial:4,streaming:3,tags:["対戦","ストラテジー","ボドゲ"],content:"## 異能盤戯\n\n**ジャンル:** アブストラクト × 特殊能力\n**商業性:** 4/5"},{id:"V01_01",title:"墨ノ太刀（すみのたち）",type:"seed",category:"visual",summary:"画面全体がリアルタイムに描かれる水墨画の2Dアクション。斬撃は墨の飛沫、敵を倒すと滲みに。墨量ゲージ管理。",hook:"筆運びが剣技。墨が尽きれば世界は白く枯れ、攻撃不能に。",commercial:4,streaming:4,tags:["アクション","和風"],content:"## 墨ノ太刀\n\n**ビジュアル:** リアルタイム水墨画\n**ジャンル:** 2Dアクション / ボスラッシュ\n**商業性:** 4/5"},{id:"V01_02",title:"TRACKING ERROR",type:"seed",category:"visual",summary:"ゲーム画面がVHSテープの再生映像という体裁のサイコロジカルホラー。画面の劣化そのものが難易度に。",hook:"1996年、行方不明の妹が最後に残したホームビデオ。修復するほど「視ているもの」に気づかれる。",commercial:3,streaming:4,tags:["ホラー","パズル"],content:"## TRACKING ERROR\n\n**ビジュアル:** VHSテープ演出\n**ジャンル:** サイコロジカルホラー\n**商業性:** 3/5"},{id:"V01_03",title:"灯葬（ひそう）",type:"seed",category:"visual",summary:"画面は完全なシルエット。唯一の光源は主人公の灯火のみ。光の角度で影の形から推理する2Dホラーステルス。",hook:"灯火を強くすれば遠くが見える。でも影の怪物も活性化する。",commercial:4,streaming:4,tags:["ホラー","ステルス"],content:"## 灯葬\n\n**ビジュアル:** 完全シルエット\n**ジャンル:** 2Dホラーステルス\n**商業性:** 4/5"},{id:"V01_04",title:"こねこねワールド",type:"seed",category:"visual",summary:"すべてが粘土で作られた世界のサンドボックス。「こねる・伸ばす・切る・焼く」の4操作で自由に成形。",hook:"粘土の神さまが眠ってしまい崩れかけた世界を「こねて」直す。",commercial:4,streaming:4,tags:["サンドボックス","パズル"],content:"## こねこねワールド\n\n**ビジュアル:** 全面粘土テクスチャ\n**ジャンル:** サンドボックス\n**商業性:** 4/5"},{id:"V01_05",title:"SPIRAL DOWN",type:"seed",category:"visual",summary:"巨大な螺旋階段を永遠に下るローグライクアクションRPG。落下速度がそのまま攻撃力に変換。",hook:"天国から追放された建築家が無限の塔を堕ちていく。止まれば弱体化。",commercial:5,streaming:5,tags:["ローグライク","アクション"],content:"## SPIRAL DOWN\n\n**ビジュアル:** エッシャー的不可能建築\n**ジャンル:** ローグライク / アクションRPG\n**商業性:** 5/5"},{id:"V01_06",title:"錦絵幻燈（にしきえげんとう）",type:"seed",category:"visual",summary:"浮世絵を3D空間に展開。視点回転で2Dと3Dを切り替え謎を解く和風アドベンチャー。",hook:"浮世絵師が描いた絵の中に閉じ込められた。視点を変えると奥行きが現れる。",commercial:3,streaming:3,tags:["パズル","和風","ナラティブ"],content:"## 錦絵幻燈\n\n**ビジュアル:** 浮世絵×3D\n**ジャンル:** 和風ADV\n**商業性:** 3/5"},{id:"V01_07",title:"MICRO EMPIRE",type:"seed",category:"visual",summary:"顕微鏡の接眼レンズ内がゲーム画面のRTS。微生物を分裂させ軍勢を増やす。",hook:"プレパラートの上の一滴の水に文明が芽生える。",commercial:3,streaming:3,tags:["ストラテジー"],content:"## MICRO EMPIRE\n\n**ビジュアル:** 顕微鏡フレーム\n**ジャンル:** RTS\n**商業性:** 3/5"},{id:"V01_08",title:"NEON AGORA",type:"seed",category:"visual",summary:"80年代Vaporwave美学全開のMMOライト。意味のない商品を売買する狂気の経済シム。",hook:"1989年に閉鎖されたはずのオンラインサービスに今もログインできる。",commercial:2,streaming:3,tags:["ソーシャル","サンドボックス"],content:"## NEON AGORA\n\n**ビジュアル:** Vaporwave美学\n**ジャンル:** MMOライト\n**商業性:** 2/5"},{id:"V01_09",title:"LUMIERE",type:"seed",category:"visual",summary:"ゲーム画面全体がステンドグラスのパズルゲーム。ガラス片を回転・配置して光の道を繋げる。",hook:"赤と青の光が混ざれば紫の道が開く。",commercial:4,streaming:3,tags:["パズル"],content:"## LUMIERE\n\n**ビジュアル:** ステンドグラス\n**ジャンル:** パズル / 瞑想系\n**商業性:** 4/5"},{id:"V01_10",title:"ラクガキダンジョン",type:"seed",category:"visual",summary:"ノートの見開きページが画面のメトロイドヴァニア。ペンで足場を描き、消しゴムで障害物を消去。",hook:"退屈な授業中に描いた落書きの勇者がノートの世界を冒険する。",commercial:5,streaming:5,tags:["アクション","プラットフォーマー"],content:"## ラクガキダンジョン\n\n**ビジュアル:** ノート＆落書き\n**ジャンル:** メトロイドヴァニア\n**商業性:** 5/5"},{id:"G01_01",title:"異議アリ・ザ・スパイア",type:"seed",category:"mashup",summary:"逆転裁判×ローグライクデッキビルダー。証拠品・証言がカードとなりランダム生成された事件を弁護。",hook:"法廷での「異議あり！」がクリティカルヒット。",commercial:4,streaming:4,tags:["ローグライク","デッキビルド","カードゲーム"],content:"## 異議アリ・ザ・スパイア\n\n**組み合わせ:** 裁判 × ローグライク\n**商業性:** 4/5"},{id:"G01_02",title:"Hell's Kitchen：地獄厨房",type:"seed",category:"mashup",summary:"協力料理ゲーム×ホラー。料理を作りつつクリーチャーから逃げ隠れする。",hook:"注文をこなさないと客（＝怪物）が厨房に押し寄せる。",commercial:5,streaming:5,tags:["ホラー","協力"],content:"## 地獄厨房\n\n**組み合わせ:** 料理 × ホラー\n**商業性:** 5/5"},{id:"G01_03",title:"CEO ラブストラテジー",type:"seed",category:"mashup",summary:"デートの選択肢がそのまま経営判断になるジレンマ設計。仕事と恋愛の両立をゲーム化。",hook:"仕事か恋か、両立できるか？",commercial:3,streaming:3,tags:["ストラテジー","ナラティブ"],content:"## CEO ラブストラテジー\n\n**組み合わせ:** 恋愛シミュ × 経営シミュ\n**商業性:** 3/5"},{id:"G01_04",title:"BeatBastions（ビートバスティオン）",type:"seed",category:"mashup",summary:"BGMのビートに合わせてタワーを配置・強化。リズムに乗った操作ほど威力UP。",hook:"音ゲーの快感とタワーディフェンスの戦略を同時に味わえる。",commercial:4,streaming:4,tags:["ストラテジー"],content:"## ビートバスティオン\n\n**組み合わせ:** 音ゲー × TD\n**商業性:** 4/5"},{id:"G01_05",title:"将棋フォース：盤上の銃声",type:"seed",category:"mashup",summary:"将棋の盤面俯瞰とFPS兵士モードを切り替える二重構造。飛車はスナイパー、桂馬は跳躍兵。",hook:"将棋の戦略でFPSの兵士を動かせ。",commercial:2,streaming:4,tags:["アクション","ストラテジー"],content:"## 将棋フォース\n\n**組み合わせ:** 将棋 × FPS\n**商業性:** 2/5"},{id:"G01_06",title:"InkCrawl：描画迷宮",type:"seed",category:"mashup",summary:"描いた線や図形がダンジョンになり自分で攻略。UGCで他プレイヤーのダンジョンにも挑戦。",hook:"自分で描いたマップを自分で攻略するメタ的快感。",commercial:4,streaming:4,tags:["サンドボックス","アクション"],content:"## InkCrawl\n\n**組み合わせ:** ペイント × ダンジョンクローラー\n**商業性:** 4/5"},{id:"G01_07",title:"DeadFeed：デッドフィード",type:"seed",category:"mashup",summary:"フォロワー数＝HPのSNS×サバイバル。バズるために危険地帯へ赴く。",hook:"フォロワー数が命。炎上すれば一気にHPが溶ける。",commercial:4,streaming:4,tags:["サバイバル","ソーシャル"],content:"## デッドフィード\n\n**組み合わせ:** SNS × サバイバル\n**商業性:** 4/5"},{id:"G01_08",title:"Godcast：神の天気予報",type:"seed",category:"mashup",summary:"天候を司る神として気圧配置を操作し文明を繁栄させるゴッドゲーム。",hook:"気圧配置の間接操作が戦略の肝。",commercial:3,streaming:3,tags:["ストラテジー"],content:"## Godcast\n\n**組み合わせ:** 天気予報 × シミュレーション\n**商業性:** 3/5"},{id:"G01_09",title:"NightCab：夜行キャブ",type:"seed",category:"mashup",summary:"深夜のネオン街タクシーが冒険の舞台。乗客ごとに異なるクエストが発生。",hook:"追っ手から逃げる客、幽霊の乗客。一晩が壮大な物語に。",commercial:4,streaming:4,tags:["ナラティブ","アクション"],content:"## NightCab\n\n**組み合わせ:** タクシー × RPG\n**商業性:** 4/5"},{id:"G01_10",title:"Lexicon：語彙の魔導書",type:"seed",category:"mashup",summary:"単語の意味・語源を組み合わせて魔法を生成する言語パズル型ローグライク。",hook:"「炎」＋「鳥」＝火の鳥召喚。辞書をめくる行為が魔導書研究。",commercial:5,streaming:4,tags:["ローグライク","パズル"],content:"## Lexicon\n\n**組み合わせ:** 辞書 × ローグライク\n**商業性:** 5/5"},{id:"G02_01",title:"賽の河原（Stones of the Forgotten）",type:"seed",category:"market",summary:"石積み×ローグライクデッキビルダー。和風死後世界で鬼がラウンドごとに石を崩しに来る。",hook:"Balatraの方程式。ポーカーの次は「石積み」。",commercial:4,streaming:4,tags:["ローグライク","デッキビルド","和風"],content:"## 賽の河原\n\n**ジャンル:** ローグライクDB × 和風\n**商業性:** 4/5"},{id:"G02_02",title:"VOID SHIFT",type:"seed",category:"market",summary:"4人Co-opホラー。各プレイヤーは異なる次元レイヤーが見える。情報を口頭共有しないと進めない。",hook:"見えているのは俺だけ！？ 非対称情報が恐怖と笑いを同時に生む。",commercial:5,streaming:5,tags:["ホラー","協力"],content:"## VOID SHIFT\n\n**ジャンル:** Co-opホラー × 次元シフト\n**商業性:** 5/5"},{id:"G02_03",title:"カミサマ経営（Shrine Inc.）",type:"seed",category:"market",summary:"寂れた神社を復興するコージー経営シム。願い事マネジメント。妖怪スタッフ雇用。",hook:"「神社」という未開拓テーマ＋妖怪キャラクター。",commercial:4,streaming:3,tags:["ストラテジー","和風"],content:"## カミサマ経営\n\n**ジャンル:** コージー経営シム\n**商業性:** 4/5"},{id:"G02_04",title:"REWIND DINER",type:"seed",category:"market",summary:"ダイナーで働く1日がループ。タイムループ×日常ミステリー×料理シム。",hook:"タイムループ×コージー×推理の三重交差。",commercial:4,streaming:4,tags:["パズル","ナラティブ","タイムループ"],content:"## REWIND DINER\n\n**ジャンル:** タイムループ × 料理シム\n**商業性:** 4/5"},{id:"G02_05",title:"バックパック・ダンジョン（荷造りの魔術師）",type:"seed",category:"market",summary:"テトリス式インベントリ配置×オートバトラー×ローグライク。PvEダンジョン踏破特化。",hook:"Backpack BattlesのPvE版。最適配置を見つける快感。",commercial:4,streaming:4,tags:["ローグライク","パズル"],content:"## バックパック・ダンジョン\n\n**ジャンル:** オートバトラー × パズル\n**商業性:** 4/5"},{id:"G02_06",title:"写シンセカイ（Phantom Lens）",type:"seed",category:"market",summary:"フィルムカメラで心霊スポットを撮影するホラー。SNS要素でバズるほど危険に。",hook:"撮影が唯一の武器かつ目的。バズるほど危険になるメタ的恐怖。",commercial:4,streaming:5,tags:["ホラー"],content:"## 写シンセカイ\n\n**ジャンル:** 写真撮影 × ホラー\n**商業性:** 4/5"},{id:"G02_07",title:"オートマタ・オーケストラ（Automata Orchestra）",type:"seed",category:"market",summary:"機械人形で楽団編成するオートバトラー×音楽リズム。ハーモニー＝攻撃力。",hook:"ビルドが音楽として聴こえる。聴覚フィードバックという未開拓の報酬系。",commercial:3,streaming:5,tags:["ストラテジー"],content:"## オートマタ・オーケストラ\n\n**ジャンル:** オートバトラー × 音楽\n**商業性:** 3/5"},{id:"G02_08",title:"モノノケ・サバイバー（Mononoke Survivors）",type:"seed",category:"market",summary:"陰陽師として大量妖怪ウェーブを退治するVS系。妖怪吸収で変身する独自システム。",hook:"和風×VS系の空白地帯。「敵がそのまま武器になる」。ROI最高。",commercial:5,streaming:4,tags:["アクション","ローグライク","和風"],content:"## モノノケ・サバイバー\n\n**ジャンル:** Vampire Survivors系 × 和風\n**商業性:** 5/5"},{id:"G02_09",title:"判決キメラ（Chimera Verdict）",type:"seed",category:"market",summary:"未来の法廷でキメラ犯罪を裁く推理パズル。DNA配列パズルで犯人特定。",hook:"遺伝子犯罪という未開拓テーマ。倫理的ジレンマが選択の重みを生む。",commercial:3,streaming:3,tags:["パズル","ナラティブ"],content:"## 判決キメラ\n\n**ジャンル:** 推理パズル × 法廷\n**商業性:** 3/5"},{id:"G02_10",title:"デス・ディリバリー（DEATH DELIVERY）",type:"seed",category:"market",summary:"新人死神として魂の宅配業務をこなすローグライク配達アクション。ダークコメディ。",hook:"「配達業務」×死神の不条理さ。ドタバタ＝配信映え。",commercial:5,streaming:5,tags:["アクション","ローグライク","ステルス"],content:"## デス・ディリバリー\n\n**ジャンル:** ローグライク配達 × 死神\n**商業性:** 5/5"}];
+</script>
+<script>
+(function(){
+"use strict";
+const TAG_COLORS=['#6c5ce7','#e84393','#fdcb6e','#00cec9','#00f0ff','#a855f7','#ff7675','#0984e3','#55efc4','#fd79a8'];
+const CAT_LABELS={mechanics:'メカニクス',visual:'ビジュアル',mashup:'マッシュアップ',market:'マーケット',boardgame:'ボドゲ'};
+const SORT_MODES=['commercial','streaming','name'];
+const SORT_LABELS={commercial:'商業性順',streaming:'配信映え順',name:'名前順'};
+let state={view:'list',search:'',catFilter:'all',selectedTags:[],tagMode:'or',sort:'commercial',currentId:null,likes:{},memos:{}};
+function loadStorage(){try{const l=localStorage.getItem('gi_likes'),m=localStorage.getItem('gi_memos');if(l)state.likes=JSON.parse(l);if(m)state.memos=JSON.parse(m)}catch(e){}}
+function saveLikes(){localStorage.setItem('gi_likes',JSON.stringify(state.likes))}
+function saveMemos(){localStorage.setItem('gi_memos',JSON.stringify(state.memos))}
+const tagColorMap={};let colorIdx=0;
+function getTagColor(tag){if(!tagColorMap[tag]){tagColorMap[tag]=TAG_COLORS[colorIdx%TAG_COLORS.length];colorIdx++}return tagColorMap[tag]}
+function starHtml(val,max){let s='';for(let i=1;i<=max;i++)s+='<span class="'+(i<=val?'on':'off')+'">&#9733;</span>';return s}
+function getAllTags(){const s=new Set();GAME_IDEAS_DATA.forEach(p=>p.tags.forEach(t=>s.add(t)));return[...s]}
+function getFiltered(){let list=GAME_IDEAS_DATA.slice();if(state.catFilter==='liked')list=list.filter(p=>state.likes[p.id]);else if(state.catFilter==='memo')list=list.filter(p=>state.memos[p.id]&&state.memos[p.id].trim());else if(state.catFilter!=='all')list=list.filter(p=>p.category===state.catFilter);if(state.search){const q=state.search.toLowerCase();list=list.filter(p=>p.title.toLowerCase().includes(q)||p.summary.toLowerCase().includes(q)||p.tags.some(t=>t.toLowerCase().includes(q)))}if(state.selectedTags.length>0){if(state.tagMode==='and')list=list.filter(p=>state.selectedTags.every(t=>p.tags.includes(t)));else list=list.filter(p=>state.selectedTags.some(t=>p.tags.includes(t)))}if(state.sort==='commercial')list.sort((a,b)=>b.commercial-a.commercial);else if(state.sort==='streaming')list.sort((a,b)=>b.streaming-a.streaming);else list.sort((a,b)=>a.title.localeCompare(b.title,'ja'));return list}
+function parseMD(md){if(!md)return'';const lines=md.split('\n');let html='',inTable=false,tableHeader=false,inUl=false,inOl=false;for(let i=0;i<lines.length;i++){let line=lines[i];if(line.trim().startsWith('|')&&line.trim().endsWith('|')){const cells=line.split('|').filter((_,idx,arr)=>idx>0&&idx<arr.length-1).map(c=>c.trim());if(cells.every(c=>/^[-:]+$/.test(c))){tableHeader=false;continue}if(!inTable){if(inUl){html+='</ul>';inUl=false}if(inOl){html+='</ol>';inOl=false}html+='<table>';inTable=true;tableHeader=true}const tag=tableHeader?'th':'td';html+='<tr>'+cells.map(c=>'<'+tag+'>'+inlineFmt(c)+'</'+tag+'>').join('')+'</tr>';if(tableHeader)tableHeader=false;continue}else if(inTable){html+='</table>';inTable=false}const h3=line.match(/^### (.+)/);if(h3){if(inUl){html+='</ul>';inUl=false}if(inOl){html+='</ol>';inOl=false}html+='<h3>'+inlineFmt(h3[1])+'</h3>';continue}const h2=line.match(/^## (.+)/);if(h2){if(inUl){html+='</ul>';inUl=false}if(inOl){html+='</ol>';inOl=false}html+='<h2>'+inlineFmt(h2[1])+'</h2>';continue}const h1=line.match(/^# (.+)/);if(h1){if(inUl){html+='</ul>';inUl=false}if(inOl){html+='</ol>';inOl=false}html+='<h1>'+inlineFmt(h1[1])+'</h1>';continue}const ul=line.match(/^[-*] (.+)/);if(ul){if(inOl){html+='</ol>';inOl=false}if(!inUl){html+='<ul>';inUl=true}html+='<li>'+inlineFmt(ul[1])+'</li>';continue}else if(inUl){html+='</ul>';inUl=false}const ol=line.match(/^\d+\. (.+)/);if(ol){if(inUl){html+='</ul>';inUl=false}if(!inOl){html+='<ol>';inOl=true}html+='<li>'+inlineFmt(ol[1])+'</li>';continue}else if(inOl){html+='</ol>';inOl=false}if(line.trim()==='')continue;html+='<p>'+inlineFmt(line)+'</p>'}if(inUl)html+='</ul>';if(inOl)html+='</ol>';if(inTable)html+='</table>';return html}
+function inlineFmt(s){s=s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');s=s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');s=s.replace(/__(.+?)__/g,'<strong>$1</strong>');return s}
+let toastTimer;function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1800)}
+function renderTagFilter(){const container=document.getElementById('tagFilter');const tags=getAllTags();container.innerHTML=tags.map(tag=>{const c=getTagColor(tag);const sel=state.selectedTags.includes(tag)?' selected':'';return'<button class="tag-badge'+sel+'" data-tag="'+tag+'" style="background:'+c+'22;color:'+c+'">'+tag+'</button>'}).join('')}
+function renderCards(){const list=getFiltered();const container=document.getElementById('cardList');const empty=document.getElementById('emptyState');document.getElementById('resultCount').textContent=list.length+'件';if(list.length===0){container.innerHTML='';empty.classList.remove('hidden');return}empty.classList.add('hidden');container.innerHTML=list.map((p,i)=>{const liked=state.likes[p.id];const hasMemo=state.memos[p.id]&&state.memos[p.id].trim();const tagsHtml=p.tags.map(t=>{const c=getTagColor(t);return'<span class="tag-badge" style="background:'+c+'22;color:'+c+'">'+t+'</span>'}).join('');return'<div class="card" data-id="'+p.id+'" style="animation-delay:'+i*0.04+'s">'+'<button class="card-heart'+(liked?' liked':'')+'" data-heart="'+p.id+'">'+(liked?'&#10084;':'&#9825;')+'</button>'+(hasMemo?'<div class="card-memo-indicator">&#128221; メモあり</div>':'')+'<div class="card-top">'+'<div class="card-title">'+p.title+'</div>'+'<span class="card-cat '+p.category+'">'+(CAT_LABELS[p.category]||p.category)+'</span>'+'</div>'+'<div class="card-summary">'+p.summary+'</div>'+'<div class="card-meta">'+'<span>商業性 <span class="stars">'+starHtml(p.commercial,5)+'</span></span>'+'<span>配信映え <span class="stars">'+starHtml(p.streaming,5)+'</span></span>'+'</div>'+'<div class="card-footer">'+tagsHtml+'</div>'+'</div>'}).join('')}
+function renderDetail(id){const p=GAME_IDEAS_DATA.find(x=>x.id===id);if(!p)return;state.currentId=id;const liked=state.likes[id];const tagsHtml=p.tags.map(t=>{const c=getTagColor(t);return'<span class="tag-badge" style="background:'+c+'22;color:'+c+'">'+t+'</span>'}).join('');document.getElementById('detailHero').innerHTML='<div class="title">'+p.title+'</div>'+'<div class="meta">'+'<span class="card-cat '+p.category+'">'+(CAT_LABELS[p.category]||p.category)+'</span>'+'</div>'+'<div class="tags">'+tagsHtml+'</div>'+'<div class="detail-stars">'+'<div class="star-group"><span class="star-label">商業性</span> <span class="stars">'+starHtml(p.commercial,5)+'</span></div>'+'<div class="star-group"><span class="star-label">配信映え</span> <span class="stars">'+starHtml(p.streaming,5)+'</span></div>'+'</div>'+'<div class="highlight-box"><div class="label">概要</div><p>'+p.summary+'</p></div>'+(p.hook?'<div class="highlight-box hook"><div class="label">Hook</div><p>'+p.hook+'</p></div>':'');document.getElementById('detailActions').innerHTML='<button class="detail-action-btn like-btn'+(liked?' liked':'')+'" id="detailLikeBtn">'+(liked?'&#10084; ライク済':'&#9825; ライクする')+'</button>';document.getElementById('memoText').value=state.memos[id]||'';document.getElementById('mdContent').innerHTML=parseMD(p.content);document.getElementById('headerTitle').textContent=p.title}
+function renderDashboard(){const total=GAME_IDEAS_DATA.length;const likeCount=Object.keys(state.likes).filter(k=>state.likes[k]).length;const memoCount=Object.keys(state.memos).filter(k=>state.memos[k]&&state.memos[k].trim()).length;const avgCommercial=(GAME_IDEAS_DATA.reduce((s,p)=>s+p.commercial,0)/total).toFixed(1);document.getElementById('dashGrid').innerHTML='<div class="dash-card"><div class="num">'+total+'</div><div class="lbl">総企画数</div></div>'+'<div class="dash-card"><div class="num">'+likeCount+'</div><div class="lbl">ライク</div></div>'+'<div class="dash-card"><div class="num">'+avgCommercial+'</div><div class="lbl">平均商業性</div></div>';const catCounts={};GAME_IDEAS_DATA.forEach(p=>{catCounts[p.category]=(catCounts[p.category]||0)+1});const catSorted=Object.entries(catCounts).sort((a,b)=>b[1]-a[1]);const catMax=catSorted.length>0?catSorted[0][1]:1;document.getElementById('dashCatList').innerHTML=catSorted.map(([cat,cnt])=>{const pct=(cnt/catMax*100).toFixed(0);return'<div class="dash-tag-row">'+'<span class="tag-name">'+(CAT_LABELS[cat]||cat)+'</span>'+'<div class="dash-tag-bar"><div class="dash-tag-bar-fill" style="width:'+pct+'%;background:var(--neon)"></div></div>'+'<span class="dash-tag-count" style="color:var(--neon)">'+cnt+'</span>'+'</div>'}).join('');const tagCounts={};GAME_IDEAS_DATA.forEach(p=>p.tags.forEach(t=>{tagCounts[t]=(tagCounts[t]||0)+1}));const sorted=Object.entries(tagCounts).sort((a,b)=>b[1]-a[1]);const max=sorted.length>0?sorted[0][1]:1;document.getElementById('dashTagList').innerHTML=sorted.map(([tag,cnt])=>{const c=getTagColor(tag);const pct=(cnt/max*100).toFixed(0);return'<div class="dash-tag-row">'+'<span class="tag-name" style="color:'+c+'">'+tag+'</span>'+'<div class="dash-tag-bar"><div class="dash-tag-bar-fill" style="width:'+pct+'%;background:'+c+'"></div></div>'+'<span class="dash-tag-count" style="color:'+c+'">'+cnt+'</span>'+'</div>'}).join('')}
+function showView(view){state.view=view;document.getElementById('listView').classList.toggle('hidden',view!=='list');document.getElementById('detailView').className=view==='detail'?'detail-page visible':'detail-page';document.getElementById('dashboardView').className=view==='dashboard'?'dashboard visible':'dashboard';document.getElementById('backBtn').classList.toggle('hidden',view==='list'||view==='dashboard');document.querySelectorAll('.nav-item').forEach(n=>{n.classList.toggle('active',n.dataset.view===(view==='detail'?'list':view))});if(view==='list'){document.getElementById('headerTitle').textContent='Game Ideas Reviewer';renderCards()}else if(view==='dashboard'){document.getElementById('headerTitle').textContent='ダッシュボード';renderDashboard()}window.scrollTo(0,0)}
+function init(){loadStorage();renderTagFilter();renderCards();document.getElementById('catFilter').addEventListener('click',e=>{const chip=e.target.closest('.filter-chip');if(!chip)return;document.querySelectorAll('#catFilter .filter-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');state.catFilter=chip.dataset.cat;renderCards()});document.getElementById('tagFilter').addEventListener('click',e=>{const badge=e.target.closest('.tag-badge');if(!badge)return;const tag=badge.dataset.tag;const idx=state.selectedTags.indexOf(tag);if(idx>=0)state.selectedTags.splice(idx,1);else state.selectedTags.push(tag);renderTagFilter();renderCards()});document.getElementById('andOrToggle').addEventListener('click',e=>{const btn=e.target.closest('button');if(!btn)return;state.tagMode=btn.dataset.mode;document.querySelectorAll('#andOrToggle button').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.tagMode));renderCards()});document.getElementById('sortBtn').addEventListener('click',e=>{const idx=SORT_MODES.indexOf(state.sort);state.sort=SORT_MODES[(idx+1)%SORT_MODES.length];e.target.textContent=SORT_LABELS[state.sort];renderCards()});let searchDebounce;document.getElementById('searchInput').addEventListener('input',e=>{clearTimeout(searchDebounce);searchDebounce=setTimeout(()=>{state.search=e.target.value.trim();renderCards()},200)});document.getElementById('cardList').addEventListener('click',e=>{const heart=e.target.closest('[data-heart]');if(heart){e.stopPropagation();const id=heart.dataset.heart;if(state.likes[id])delete state.likes[id];else state.likes[id]=true;saveLikes();renderCards();return}const card=e.target.closest('.card');if(!card)return;renderDetail(card.dataset.id);showView('detail');history.pushState(null,'','')});document.getElementById('backBtn').addEventListener('click',()=>showView('list'));document.getElementById('detailActions').addEventListener('click',e=>{const btn=e.target.closest('.like-btn');if(!btn)return;const id=state.currentId;if(state.likes[id])delete state.likes[id];else state.likes[id]=true;saveLikes();renderDetail(id);showToast(state.likes[id]?'ライクしました':'ライクを解除しました')});document.getElementById('memoSaveBtn').addEventListener('click',()=>{const val=document.getElementById('memoText').value.trim();if(val)state.memos[state.currentId]=val;else delete state.memos[state.currentId];saveMemos();showToast('メモを保存しました')});document.getElementById('bottomNav').addEventListener('click',e=>{const item=e.target.closest('.nav-item');if(!item)return;showView(item.dataset.view)});document.getElementById('exportBtn').addEventListener('click',()=>{const likedIds=Object.keys(state.likes).filter(k=>state.likes[k]);const likedData=GAME_IDEAS_DATA.filter(p=>likedIds.includes(p.id));const json=JSON.stringify(likedData,null,2);const blob=new Blob([json],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='liked_game_ideas.json';a.click();URL.revokeObjectURL(url);showToast('エクスポートしました')});window.addEventListener('popstate',()=>{if(state.view==='detail')showView('list')})}
+document.addEventListener('DOMContentLoaded',init);
+})();
+</script>
+</body>
+</html>
